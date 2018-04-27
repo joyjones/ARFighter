@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SkyARFighterClient
+namespace SkyARFighter.Client
 {
     static class Program
     {

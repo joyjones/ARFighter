@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyARFighterServer
+namespace SkyARFighter.Server
 {
     public class TcpServer
     {
@@ -30,7 +32,7 @@ namespace SkyARFighterServer
                 Thread.CurrentThread.Name = "连接监听线程";
                 using (serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp))
                 {
-                    var point = new IPEndPoint(IPAddress.Any, 8765);
+                    var point = new IPEndPoint(IPAddress.Any, 8333);
                     serverSocket.Bind(point);
                     serverSocket.Listen(10);
                     startedUp.Set();
@@ -55,10 +57,19 @@ namespace SkyARFighterServer
             LogAppended?.Invoke("服务器已停止。");
         }
 
-        public void SendMessage(Socket client, string msg)
+        public bool SendMessage(Socket client, string msg)
         {
             if (Running && client.Connected)
-                client.Send(Encoding.Unicode.GetBytes(msg));
+            {
+                var bytes = Encoding.Unicode.GetBytes(msg);
+                var header = BitConverter.GetBytes(bytes.Length);
+                var data = new byte[header.Length + bytes.Length];
+                Array.Copy(header, data, header.Length);
+                Array.Copy(bytes, 0, data, 4, bytes.Length);
+                client.Send(data);
+                return true;
+            }
+            return false;
         }
 
         private void Listen()
@@ -78,7 +89,6 @@ namespace SkyARFighterServer
                     return;
                 }
                 connectedNewClient.Set();
-                SendMessage(client, "你好啊客户端，我是服务器~");
 
                 ClientConnectionChanged?.Invoke(client, true);
                 LogAppended?.Invoke($"客户端[{client.RemoteEndPoint}] 连接成功。");
@@ -99,9 +109,36 @@ namespace SkyARFighterServer
                     length = client.EndReceive(ar);
                 }
                 catch { return; }
-                var message = Encoding.Unicode.GetString(buffer, 0, length);
-                if (!string.IsNullOrEmpty(message))
-                    ReceivedClientMessage?.Invoke(client, message);
+
+                if (length > 0)
+                {
+                    int readLen = 0, offset = 0;
+                    if (receivingPartialDataLength > 0)
+                    {
+                        readLen = receivingPartialDataLength;
+                        receivingPartialDataLength = -1;
+                    }
+                    else
+                    {
+                        readLen = BitConverter.ToInt32(buffer, 0);
+                        if (length == 4)
+                        {
+                            receivingPartialDataLength = readLen;
+                            readLen = 0;
+                        }
+                        else
+                        {
+                            offset = 4;
+                        }
+                    }
+                    if (readLen > 0)
+                    {
+                        var str = Encoding.UTF8.GetString(buffer, offset, readLen);
+                        var msg = JsonConvert.DeserializeObject(str).ToString();
+                        if (!string.IsNullOrEmpty(msg))
+                            ReceivedClientMessage?.Invoke(client, msg);
+                    }
+                }
                 ReceiveMessage(client);
             }), null);
         }
@@ -110,6 +147,7 @@ namespace SkyARFighterServer
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;
         private List<Socket> clients = new List<Socket>();
+        private int receivingPartialDataLength = -1;
 
         public event Action<string> LogAppended;
         public event Action<Socket, bool> ClientConnectionChanged;

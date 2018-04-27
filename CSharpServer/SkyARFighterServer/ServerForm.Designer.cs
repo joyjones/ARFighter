@@ -1,4 +1,4 @@
-﻿namespace SkyARFighterServer
+﻿namespace SkyARFighter.Server
 {
     partial class ServerForm
     {

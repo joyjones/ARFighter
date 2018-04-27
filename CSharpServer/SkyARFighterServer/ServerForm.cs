@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SkyARFighterServer
+namespace SkyARFighter.Server
 {
     public partial class ServerForm : Form
     {
@@ -42,7 +42,13 @@ namespace SkyARFighterServer
             if (!connected)
                 clientMessages.Remove(client);
             else if (!clientMessages.ContainsKey(client))
+            {
                 clientMessages[client] = "";
+
+                string msg = "你好啊客户端，我是服务器~";
+                if (Program.Server.SendMessage(client, msg))
+                    Server_SentClientMessage(client, msg);
+            }
 
             BeginInvoke(new Action(() =>
             {
@@ -59,12 +65,18 @@ namespace SkyARFighterServer
                 {
                     lsvClients.Items[0].Selected = true;
                 }
+                tsslClientCount.Text = "客户端数: " + lsvClients.Items.Count;
             }));
         }
 
         private void Server_ReceivedClientMessage(Socket client, string msg)
         {
-            clientMessages[client] += msg + "\r\n";
+            clientMessages[client] += "=> " + msg + "\r\n";
+        }
+
+        private void Server_SentClientMessage(Socket client, string msg)
+        {
+            clientMessages[client] += "<= " + msg + "\r\n";
         }
 
         private void Server_LogAppended(string msg)
@@ -109,7 +121,11 @@ namespace SkyARFighterServer
         {
             if (SelectedClient == null || txbNewMsg.Text.Length == 0)
                 return;
-            Program.Server.SendMessage(SelectedClient, txbNewMsg.Text);
+            if (Program.Server.SendMessage(SelectedClient, txbNewMsg.Text))
+            {
+                Server_SentClientMessage(SelectedClient, txbNewMsg.Text);
+                txbNewMsg.Text = "";
+            }
         }
 
         private Dictionary<Socket, string> clientMessages = new Dictionary<Socket, string>();

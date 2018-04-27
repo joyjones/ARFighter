@@ -1,4 +1,4 @@
-﻿namespace SkyARFighterClient
+﻿namespace SkyARFighter.Client
 {
     partial class ClientForm
     {

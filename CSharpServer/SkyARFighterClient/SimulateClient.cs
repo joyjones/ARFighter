@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SkyARFighterClient
+namespace SkyARFighter.Client
 {
     public class SimulateClient
     {
@@ -43,11 +43,17 @@ namespace SkyARFighterClient
             }
         }
 
-        public void SendMessage(string msg)
+        public bool SendMessage(string msg)
         {
             if (!Connected)
-                return;
-            socket.Send(Encoding.Unicode.GetBytes(msg));
+                return false;
+
+            var bytes = Encoding.Unicode.GetBytes(msg);
+            var header = BitConverter.GetBytes(bytes.Length);
+            var data = new byte[header.Length + bytes.Length];
+            Array.Copy(header, data, header.Length);
+            Array.Copy(bytes, 0, data, 4, bytes.Length);
+            return socket.Send(data) > 0;
         }
 
         private void BeginReceive()
@@ -61,7 +67,9 @@ namespace SkyARFighterClient
                     length = socket.EndReceive(ar);
                 }
                 catch { return; }
-                var message = Encoding.Unicode.GetString(buffer, 0, length);
+
+                int len = BitConverter.ToInt32(buffer, 0);
+                var message = Encoding.Unicode.GetString(buffer, 4, len);
                 ReceivedMessage?.Invoke(message);
 
                 BeginReceive();

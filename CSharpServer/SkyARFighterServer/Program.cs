@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SkyARFighterServer
+namespace SkyARFighter.Server
 {
     static class Program
     {

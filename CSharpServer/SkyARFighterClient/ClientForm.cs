@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SkyARFighterClient
+namespace SkyARFighter.Client
 {
     public partial class ClientForm : Form
     {
@@ -20,7 +20,7 @@ namespace SkyARFighterClient
         private void ClientForm_Load(object sender, EventArgs e)
         {
             txbServerIP.Text = "127.0.0.1";
-            txbServerPort.Text = "8765";
+            txbServerPort.Text = "8333";
             Program.Client.ReceivedMessage += Client_ReceivedMessage;
         }
 
@@ -28,8 +28,13 @@ namespace SkyARFighterClient
         {
             BeginInvoke(new Action(() =>
             {
-                txbMessages.Text += msg + "\r\n";
+                txbMessages.Text += "=> " + msg + "\r\n";
             }));
+        }
+
+        private void Client_SentMessage(string msg)
+        {
+            txbMessages.Text += "<= " + msg + "\r\n";
         }
 
         private void bnConnectServer_Click(object sender, EventArgs e)
@@ -48,7 +53,11 @@ namespace SkyARFighterClient
         {
             if (txbNewMsg.Text.Length == 0)
                 return;
-            Program.Client.SendMessage(txbNewMsg.Text);
+            if (Program.Client.SendMessage(txbNewMsg.Text))
+            {
+                Client_SentMessage(txbNewMsg.Text);
+                txbNewMsg.Text = "";
+            }
         }
 
     }
