@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyARFighter.Server", "SkyARFighterServer\SkyARFighter.Server.csproj", "{21D2D745-9019-4A57-9EBE-844672CA5420}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyARFighter.Server", "SkyARFighter.Server\SkyARFighter.Server.csproj", "{21D2D745-9019-4A57-9EBE-844672CA5420}"
 	ProjectSection(ProjectDependencies) = postProject
 		{62B7522A-F856-4C90-9317-A97DB1155708} = {62B7522A-F856-4C90-9317-A97DB1155708}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyARFighter.Client", "SkyARFighterClient\SkyARFighter.Client.csproj", "{A5D19B52-2260-4810-8EE6-8683C7B2BED0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyARFighter.Client", "SkyARFighter.Client\SkyARFighter.Client.csproj", "{A5D19B52-2260-4810-8EE6-8683C7B2BED0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{62B7522A-F856-4C90-9317-A97DB1155708} = {62B7522A-F856-4C90-9317-A97DB1155708}
 	EndProjectSection
