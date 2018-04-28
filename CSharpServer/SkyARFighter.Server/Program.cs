@@ -20,6 +20,7 @@ namespace SkyARFighter.Server
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Server.Test();
             Application.Run(new ServerForm());
         }
 

@@ -23,45 +23,40 @@ namespace SkyARFighter.Server
         {
             Program.Server.LogAppended += Server_LogAppended;
             Program.Server.ClientConnectionChanged += Server_ClientConnectionChanged;
-            Program.Server.ReceivedClientMessage += Server_ReceivedClientMessage;
+            //Program.Server.ReceivedClientMessage += Server_ReceivedClientMessage;
         }
 
-        public Socket SelectedClient
+        public Player SelectedPlayer
         {
             get; private set;
         }
 
         private void timerTick_Tick(object sender, EventArgs e)
         {
-            if (SelectedClient != null)
-                txbClientMsgs.Text = clientMessages[SelectedClient];
+            //if (SelectedPlayer != null)
+            //    txbClientMsgs.Text = clientMessages[SelectedPlayer];
         }
 
-        private void Server_ClientConnectionChanged(Socket client, bool connected)
+        private void Server_ClientConnectionChanged(Player player, bool connected)
         {
-            if (!connected)
-                clientMessages.Remove(client);
-            else if (!clientMessages.ContainsKey(client))
+            if (connected)
             {
-                clientMessages[client] = "";
-
-                string msg = "你好啊客户端，我是服务器~";
-                if (Program.Server.SendMessage(client, msg))
-                    Server_SentClientMessage(client, msg);
+                player.SendMessage("你好啊客户端，我是服务器~");
+                    //Server_SentClientMessage(player, msg);
             }
 
             BeginInvoke(new Action(() =>
             {
                 lsvClients.Items.Clear();
-                foreach (var c in Program.Server.Clients)
+                foreach (var c in Program.Server.Players)
                 {
-                    var lvi = new ListViewItem(c.RemoteEndPoint.ToString());
+                    var lvi = new ListViewItem(c.UsingSocket.RemoteEndPoint.ToString());
                     lvi.Tag = c;
-                    if (c == SelectedClient)
+                    if (c == SelectedPlayer)
                         lvi.Selected = true;
                     lsvClients.Items.Add(lvi);
                 }
-                if (lsvClients.Items.Count > 0 && SelectedClient == null)
+                if (lsvClients.Items.Count > 0 && SelectedPlayer == null)
                 {
                     lsvClients.Items[0].Selected = true;
                 }
@@ -91,13 +86,13 @@ namespace SkyARFighter.Server
         {
             if (lsvClients.SelectedItems.Count == 0)
             {
-                SelectedClient = null;
+                SelectedPlayer = null;
                 txbClientMsgs.Text = "";
             }
             else
             {
-                SelectedClient = lsvClients.SelectedItems[0].Tag as Socket;
-                txbClientMsgs.Text = clientMessages[SelectedClient];
+                SelectedPlayer = lsvClients.SelectedItems[0].Tag as Player;
+                //txbClientMsgs.Text = clientMessages[SelectedPlayer];
             }
         }
 
@@ -119,13 +114,10 @@ namespace SkyARFighter.Server
 
         private void bnSendMsg_Click(object sender, EventArgs e)
         {
-            if (SelectedClient == null || txbNewMsg.Text.Length == 0)
+            if (SelectedPlayer == null || txbNewMsg.Text.Length == 0)
                 return;
-            if (Program.Server.SendMessage(SelectedClient, txbNewMsg.Text))
-            {
-                Server_SentClientMessage(SelectedClient, txbNewMsg.Text);
-                txbNewMsg.Text = "";
-            }
+            SelectedPlayer.SendMessage(txbNewMsg.Text);
+            txbNewMsg.Text = "";
         }
 
         private Dictionary<Socket, string> clientMessages = new Dictionary<Socket, string>();

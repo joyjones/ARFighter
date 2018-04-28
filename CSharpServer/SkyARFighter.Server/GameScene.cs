@@ -4,14 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyARFighter.Common
+namespace SkyARFighter.Server
 {
-    public class Command
+    public class GameScene
     {
-    }
-
-    public class SyncCameraCommand : Command
-    {
-
     }
 }

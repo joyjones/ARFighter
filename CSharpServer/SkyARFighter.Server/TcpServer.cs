@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using SkyARFighter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,14 +16,29 @@ namespace SkyARFighter.Server
 {
     public class TcpServer
     {
+        static TcpServer()
+        {
+            foreach (var mi in typeof(Player).GetMethods())
+            {
+                if (mi.GetCustomAttribute(typeof(RemotingMethodAttribute)) is RemotingMethodAttribute attr)
+                {
+                    MsgHandlers[attr.MethodId] = mi;
+                }
+            }
+        }
+
+        public TcpServer()
+        {
+        }
+
         public bool Running
         {
             get => startedUp.WaitOne(0);
         }
 
-        public IEnumerable<Socket> Clients
+        public IEnumerable<Player> Players
         {
-            get => clients;
+            get => players;
         }
 
         public void Start()
@@ -53,34 +71,20 @@ namespace SkyARFighter.Server
             if (!Running)
                 return;
             startedUp.Reset();
-            clients.Clear();
+            players.Clear();
             LogAppended?.Invoke("服务器已停止。");
-        }
-
-        public bool SendMessage(Socket client, string msg)
-        {
-            if (Running && client.Connected)
-            {
-                var bytes = Encoding.Unicode.GetBytes(msg);
-                var header = BitConverter.GetBytes(bytes.Length);
-                var data = new byte[header.Length + bytes.Length];
-                Array.Copy(header, data, header.Length);
-                Array.Copy(bytes, 0, data, 4, bytes.Length);
-                client.Send(data);
-                return true;
-            }
-            return false;
         }
 
         private void Listen()
         {
             serverSocket.BeginAccept(new AsyncCallback(ar =>
             {
-                Socket client = null;
+                Player player = null;
                 try
                 {
-                    client = serverSocket.EndAccept(ar);
-                    clients.Add(client);
+                    var sock = serverSocket.EndAccept(ar);
+                    player = new Player(sock);
+                    players.Add(player);
                 }
                 catch
                 {
@@ -90,67 +94,67 @@ namespace SkyARFighter.Server
                 }
                 connectedNewClient.Set();
 
-                ClientConnectionChanged?.Invoke(client, true);
-                LogAppended?.Invoke($"客户端[{client.RemoteEndPoint}] 连接成功。");
+                ClientConnectionChanged?.Invoke(player, true);
+                LogAppended?.Invoke($"客户端[{player.UsingSocket.RemoteEndPoint}] 连接成功。");
 
-                ReceiveMessage(client);
+                ReceiveMessage(player);
                 Listen();
             }), null);
         }
 
-        private void ReceiveMessage(Socket client)
+        private void ReceiveMessage(Player player)
         {
             var buffer = new byte[1024];
-            client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback((ar) =>
+            player.UsingSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback((ar) =>
             {
                 int length = 0;
                 try
                 {
-                    length = client.EndReceive(ar);
+                    length = player.UsingSocket.EndReceive(ar);
                 }
                 catch { return; }
 
                 if (length > 0)
                 {
-                    int readLen = 0, offset = 0;
-                    if (receivingPartialDataLength > 0)
+                    int msgType = BitConverter.ToInt32(buffer, 0);
+                    if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
                     {
-                        readLen = receivingPartialDataLength;
-                        receivingPartialDataLength = -1;
-                    }
-                    else
-                    {
-                        readLen = BitConverter.ToInt32(buffer, 0);
-                        if (length == 4)
-                        {
-                            receivingPartialDataLength = readLen;
-                            readLen = 0;
-                        }
-                        else
-                        {
-                            offset = 4;
-                        }
-                    }
-                    if (readLen > 0)
-                    {
-                        var str = Encoding.UTF8.GetString(buffer, offset, readLen);
-                        var msg = JsonConvert.DeserializeObject(str).ToString();
-                        if (!string.IsNullOrEmpty(msg))
-                            ReceivedClientMessage?.Invoke(client, msg);
+                        var str = Encoding.UTF8.GetString(buffer, 8, length - 8);
+                        var args = JsonHelper.ParseMethodParameters(mi, str);
+                        mi.Invoke(player, args);
                     }
                 }
-                ReceiveMessage(client);
+                ReceiveMessage(player);
             }), null);
+        }
+
+        class Mat
+        {
+            public float[] matrix = new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+        }
+
+        public void Test()
+        {
+            int msgType = 1;
+            if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
+            {
+                var mat = new Mat();
+                var inputJson = JsonConvert.SerializeObject(mat);
+                var args = JsonHelper.ParseMethodParameters(mi, inputJson);
+                
+                System.Diagnostics.Debug.WriteLine("ok");
+            }
         }
 
         private ManualResetEvent startedUp = new ManualResetEvent(false);
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;
-        private List<Socket> clients = new List<Socket>();
-        private int receivingPartialDataLength = -1;
+        private List<Player> players = new List<Player>();
 
         public event Action<string> LogAppended;
-        public event Action<Socket, bool> ClientConnectionChanged;
-        public event Action<Socket, string> ReceivedClientMessage;
+        public event Action<Player, bool> ClientConnectionChanged;
+        public event Action<Player, string> ReceivedClientMessage;
+
+        public static Dictionary<int, MethodInfo> MsgHandlers = new Dictionary<int, MethodInfo>();
     }
 }
