@@ -1,0 +1,489 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2FFCA4919C11294B14F0935A /* Pods_ARFighter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D09E74A19BAEB5991BDFAEB9 /* Pods_ARFighter.framework */; };
+		DF77EE3D2092F0850058B31B /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF77EE3C2092F0850058B31B /* MathHelper.swift */; };
+		DF89B5F22091CE530013684A /* TcpSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF89B5F12091CE530013684A /* TcpSocketServer.swift */; };
+		DF9DF5C02091C703005A66A1 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */; };
+		DFE313442093226000080A64 /* HttpHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE313432093226000080A64 /* HttpHelper.swift */; };
+		DFE313482093466900080A64 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE313472093466900080A64 /* NetModel.swift */; };
+		DFF4B22E2091A16E00A9542C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF4B22D2091A16E00A9542C /* AppDelegate.swift */; };
+		DFF4B2302091A16E00A9542C /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DFF4B22F2091A16E00A9542C /* art.scnassets */; };
+		DFF4B2322091A16E00A9542C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF4B2312091A16E00A9542C /* ViewController.swift */; };
+		DFF4B2352091A16E00A9542C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFF4B2332091A16E00A9542C /* Main.storyboard */; };
+		DFF4B2372091A17000A9542C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFF4B2362091A17000A9542C /* Assets.xcassets */; };
+		DFF4B23A2091A17000A9542C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFF4B2382091A17000A9542C /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DF9DF5BC2091A972005A66A1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		81CC4C5D474CE9950FE9D28C /* Pods-ARFighter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARFighter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ARFighter/Pods-ARFighter.debug.xcconfig"; sourceTree = "<group>"; };
+		D09E74A19BAEB5991BDFAEB9 /* Pods_ARFighter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARFighter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1EB7FFABB1095472E968B59 /* Pods-ARFighter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARFighter.release.xcconfig"; path = "Pods/Target Support Files/Pods-ARFighter/Pods-ARFighter.release.xcconfig"; sourceTree = "<group>"; };
+		DF77EE3C2092F0850058B31B /* MathHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathHelper.swift; sourceTree = "<group>"; };
+		DF89B5F12091CE530013684A /* TcpSocketServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TcpSocketServer.swift; sourceTree = "<group>"; };
+		DF9DF5B72091A8FC005A66A1 /* SwiftSocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
+		DFE313432093226000080A64 /* HttpHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHelper.swift; sourceTree = "<group>"; };
+		DFE313472093466900080A64 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
+		DFF4B22A2091A16E00A9542C /* ARFighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARFighter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFF4B22D2091A16E00A9542C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DFF4B22F2091A16E00A9542C /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
+		DFF4B2312091A16E00A9542C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DFF4B2342091A16E00A9542C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DFF4B2362091A17000A9542C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DFF4B2392091A17000A9542C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DFF4B23B2091A17000A9542C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DFF4B2272091A16E00A9542C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2FFCA4919C11294B14F0935A /* Pods_ARFighter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		50922B47130E46D14679946F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				81CC4C5D474CE9950FE9D28C /* Pods-ARFighter.debug.xcconfig */,
+				D1EB7FFABB1095472E968B59 /* Pods-ARFighter.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		DFE313462093463200080A64 /* Structures */ = {
+			isa = PBXGroup;
+			children = (
+				DFE313472093466900080A64 /* NetModel.swift */,
+			);
+			name = Structures;
+			sourceTree = "<group>";
+		};
+		DFF4B2212091A16E00A9542C = {
+			isa = PBXGroup;
+			children = (
+				DFF4B22C2091A16E00A9542C /* ARFighter */,
+				DFF4B22B2091A16E00A9542C /* Products */,
+				50922B47130E46D14679946F /* Pods */,
+				E294FFD08C2FB5165E60519B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		DFF4B22B2091A16E00A9542C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DFF4B22A2091A16E00A9542C /* ARFighter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DFF4B22C2091A16E00A9542C /* ARFighter */ = {
+			isa = PBXGroup;
+			children = (
+				DFE313462093463200080A64 /* Structures */,
+				DFF4B22D2091A16E00A9542C /* AppDelegate.swift */,
+				DF77EE3C2092F0850058B31B /* MathHelper.swift */,
+				DFF4B22F2091A16E00A9542C /* art.scnassets */,
+				DFF4B2312091A16E00A9542C /* ViewController.swift */,
+				DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */,
+				DF89B5F12091CE530013684A /* TcpSocketServer.swift */,
+				DFE313432093226000080A64 /* HttpHelper.swift */,
+				DFF4B2332091A16E00A9542C /* Main.storyboard */,
+				DFF4B2362091A17000A9542C /* Assets.xcassets */,
+				DFF4B2382091A17000A9542C /* LaunchScreen.storyboard */,
+				DFF4B23B2091A17000A9542C /* Info.plist */,
+			);
+			path = ARFighter;
+			sourceTree = "<group>";
+		};
+		E294FFD08C2FB5165E60519B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DF9DF5B72091A8FC005A66A1 /* SwiftSocket.framework */,
+				D09E74A19BAEB5991BDFAEB9 /* Pods_ARFighter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DFF4B2292091A16E00A9542C /* ARFighter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DFF4B23E2091A17000A9542C /* Build configuration list for PBXNativeTarget "ARFighter" */;
+			buildPhases = (
+				A3186D08FA6032EEB9A3473F /* [CP] Check Pods Manifest.lock */,
+				DFF4B2262091A16E00A9542C /* Sources */,
+				DFF4B2272091A16E00A9542C /* Frameworks */,
+				DFF4B2282091A16E00A9542C /* Resources */,
+				C77A2C9F79B4AD44B352ABF3 /* [CP] Embed Pods Frameworks */,
+				BF473FBAED1C98CE20C9FBD5 /* [CP] Copy Pods Resources */,
+				DF9DF5BC2091A972005A66A1 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ARFighter;
+			productName = ARFighter;
+			productReference = DFF4B22A2091A16E00A9542C /* ARFighter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DFF4B2222091A16E00A9542C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = tjwd;
+				TargetAttributes = {
+					DFF4B2292091A16E00A9542C = {
+						CreatedOnToolsVersion = 9.3;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+							com.apple.DataProtection = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 0;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
+							com.apple.WAC = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = DFF4B2252091A16E00A9542C /* Build configuration list for PBXProject "ARFighter" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DFF4B2212091A16E00A9542C;
+			productRefGroup = DFF4B22B2091A16E00A9542C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DFF4B2292091A16E00A9542C /* ARFighter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DFF4B2282091A16E00A9542C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFF4B2302091A16E00A9542C /* art.scnassets in Resources */,
+				DFF4B23A2091A17000A9542C /* LaunchScreen.storyboard in Resources */,
+				DFF4B2372091A17000A9542C /* Assets.xcassets in Resources */,
+				DFF4B2352091A16E00A9542C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A3186D08FA6032EEB9A3473F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ARFighter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BF473FBAED1C98CE20C9FBD5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ARFighter/Pods-ARFighter-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C77A2C9F79B4AD44B352ABF3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-ARFighter/Pods-ARFighter-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftSocket/SwiftSocket.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSocket.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ARFighter/Pods-ARFighter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DFF4B2262091A16E00A9542C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF77EE3D2092F0850058B31B /* MathHelper.swift in Sources */,
+				DFF4B2322091A16E00A9542C /* ViewController.swift in Sources */,
+				DFF4B22E2091A16E00A9542C /* AppDelegate.swift in Sources */,
+				DF9DF5C02091C703005A66A1 /* NetworkViewController.swift in Sources */,
+				DFE313482093466900080A64 /* NetModel.swift in Sources */,
+				DF89B5F22091CE530013684A /* TcpSocketServer.swift in Sources */,
+				DFE313442093226000080A64 /* HttpHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DFF4B2332091A16E00A9542C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DFF4B2342091A16E00A9542C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		DFF4B2382091A17000A9542C /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DFF4B2392091A17000A9542C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DFF4B23C2091A17000A9542C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DFF4B23D2091A17000A9542C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DFF4B23F2091A17000A9542C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81CC4C5D474CE9950FE9D28C /* Pods-ARFighter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YF9TBN3N84;
+				INFOPLIST_FILE = ARFighter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.skyarvr.ar.fighter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DFF4B2402091A17000A9542C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1EB7FFABB1095472E968B59 /* Pods-ARFighter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YF9TBN3N84;
+				INFOPLIST_FILE = ARFighter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.skyarvr.ar.fighter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DFF4B2252091A16E00A9542C /* Build configuration list for PBXProject "ARFighter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DFF4B23C2091A17000A9542C /* Debug */,
+				DFF4B23D2091A17000A9542C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DFF4B23E2091A17000A9542C /* Build configuration list for PBXNativeTarget "ARFighter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DFF4B23F2091A17000A9542C /* Debug */,
+				DFF4B2402091A17000A9542C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DFF4B2222091A16E00A9542C /* Project object */;
+}
