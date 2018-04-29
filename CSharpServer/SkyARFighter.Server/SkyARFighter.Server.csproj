@@ -48,9 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameObject.cs" />
-    <Compile Include="GameScene.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Structures\GameObject.cs" />
+    <Compile Include="Structures\GameScene.cs" />
+    <Compile Include="Structures\Player.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,7 +59,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TcpServer.cs" />
+    <Compile Include="Network\TcpServer.cs" />
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
     </EmbeddedResource>

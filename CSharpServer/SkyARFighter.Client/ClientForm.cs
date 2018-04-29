@@ -21,7 +21,8 @@ namespace SkyARFighter.Client
         {
             txbServerIP.Text = "127.0.0.1";
             txbServerPort.Text = "8333";
-            Program.Client.ReceivedMessage += Client_ReceivedMessage;
+            bnDisconnect.Enabled = false;
+            //Program.Client.ReceivedMessage += Client_ReceivedMessage;
         }
 
         private void Client_ReceivedMessage(string msg)
@@ -40,24 +41,30 @@ namespace SkyARFighter.Client
         private void bnConnectServer_Click(object sender, EventArgs e)
         {
             if (Program.Client.Connect(txbServerIP.Text, int.Parse(txbServerPort.Text)))
+            {
                 tsslConnectState.Text = "已连接";
+                bnConnectServer.Enabled = false;
+                bnDisconnect.Enabled = true;
+            }
         }
 
         private void bnDisconnect_Click(object sender, EventArgs e)
         {
             Program.Client.Disconnect();
             tsslConnectState.Text = "未连接";
+            bnConnectServer.Enabled = true;
+            bnDisconnect.Enabled = false;
         }
 
         private void bnSendMsg_Click(object sender, EventArgs e)
         {
-            if (txbNewMsg.Text.Length == 0)
-                return;
-            if (Program.Client.SendMessage(txbNewMsg.Text))
-            {
-                Client_SentMessage(txbNewMsg.Text);
-                txbNewMsg.Text = "";
-            }
+            //if (txbNewMsg.Text.Length == 0)
+            //    return;
+            //if (Program.Client.SendMessage(txbNewMsg.Text))
+            //{
+            //    Client_SentMessage(txbNewMsg.Text);
+            //    txbNewMsg.Text = "";
+            //}
         }
 
     }

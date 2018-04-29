@@ -28,19 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientForm));
             this.bnConnectServer = new System.Windows.Forms.Button();
             this.txbServerIP = new System.Windows.Forms.TextBox();
             this.txbServerPort = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.txbNewMsg = new System.Windows.Forms.TextBox();
-            this.bnSendMsg = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
             this.txbMessages = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.bnDisconnect = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslConnectState = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // bnConnectServer
@@ -76,52 +84,16 @@
             this.label1.TabIndex = 3;
             this.label1.Text = ":";
             // 
-            // txbNewMsg
-            // 
-            this.txbNewMsg.Location = new System.Drawing.Point(12, 102);
-            this.txbNewMsg.Name = "txbNewMsg";
-            this.txbNewMsg.Size = new System.Drawing.Size(263, 21);
-            this.txbNewMsg.TabIndex = 4;
-            // 
-            // bnSendMsg
-            // 
-            this.bnSendMsg.Location = new System.Drawing.Point(281, 100);
-            this.bnSendMsg.Name = "bnSendMsg";
-            this.bnSendMsg.Size = new System.Drawing.Size(37, 23);
-            this.bnSendMsg.TabIndex = 5;
-            this.bnSendMsg.Text = "发送";
-            this.bnSendMsg.UseVisualStyleBackColor = true;
-            this.bnSendMsg.Click += new System.EventHandler(this.bnSendMsg_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 87);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 12);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "发送消息:";
-            // 
             // txbMessages
             // 
-            this.txbMessages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.txbMessages.Location = new System.Drawing.Point(12, 157);
+            this.txbMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txbMessages.Location = new System.Drawing.Point(3, 3);
             this.txbMessages.Multiline = true;
             this.txbMessages.Name = "txbMessages";
             this.txbMessages.ReadOnly = true;
             this.txbMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbMessages.Size = new System.Drawing.Size(306, 132);
+            this.txbMessages.Size = new System.Drawing.Size(438, 229);
             this.txbMessages.TabIndex = 7;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 136);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "接受消息:";
             // 
             // bnDisconnect
             // 
@@ -137,9 +109,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsslConnectState});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 292);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 393);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(326, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(476, 22);
             this.statusStrip1.TabIndex = 10;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -149,18 +121,82 @@
             this.tsslConnectState.Size = new System.Drawing.Size(44, 17);
             this.tsslConnectState.Text = "未连接";
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(12, 68);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(452, 322);
+            this.tabControl1.TabIndex = 11;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.panel1);
+            this.tabPage1.Controls.Add(this.toolStrip1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(444, 296);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "场景";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.txbMessages);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(444, 235);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "日志";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton2});
+            this.toolStrip1.Location = new System.Drawing.Point(3, 3);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(438, 25);
+            this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(76, 22);
+            this.toolStripButton1.Text = "创建物体";
+            // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 28);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(438, 265);
+            this.panel1.TabIndex = 1;
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(76, 22);
+            this.toolStripButton2.Text = "发送消息";
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(326, 314);
+            this.ClientSize = new System.Drawing.Size(476, 415);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.bnDisconnect);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.txbMessages);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.bnSendMsg);
-            this.Controls.Add(this.txbNewMsg);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txbServerPort);
             this.Controls.Add(this.txbServerIP);
@@ -170,6 +206,13 @@
             this.Load += new System.EventHandler(this.ClientForm_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -181,14 +224,17 @@
         private System.Windows.Forms.TextBox txbServerIP;
         private System.Windows.Forms.TextBox txbServerPort;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txbNewMsg;
-        private System.Windows.Forms.Button bnSendMsg;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txbMessages;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button bnDisconnect;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsslConnectState;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 }
 

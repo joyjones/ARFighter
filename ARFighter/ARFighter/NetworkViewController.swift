@@ -29,9 +29,9 @@ class NetworkViewController: UIViewController {
         let url = "http://apis.juhe.cn/mobile/get?phone=13301388888&key=4e602dad4a05b4d491ffb82511613158"
         HttpHelper.Shared.Get(path: url, success: onSuccess, failure: onFail)
         
-        return
-        socketServer = TcpSocketServer()
-        socketServer?.start()
+//        return
+//        socketServer = TcpSocketServer()
+//        socketServer?.start()
     }
     @IBAction func stopServer(_ sender: UIButton) {
         disconnectServer()

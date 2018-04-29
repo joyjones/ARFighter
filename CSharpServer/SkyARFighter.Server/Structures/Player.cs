@@ -22,13 +22,13 @@ namespace SkyARFighter.Server
 
         #region interfaces
         [RemotingMethod(0x01)]
-        public void SyncCamera(float[] values)
+        public void SyncCamera(Matrix mat)
         {
-            cameraTransform.Fill(values);
+            cameraTransform.Fill(mat.Values);
         }
 
         [RemotingMethod(0x02)]
-        public void CreateObject()
+        public void CreateObject(int type, Vector3 size, Matrix transform)
         {
         }
         #endregion

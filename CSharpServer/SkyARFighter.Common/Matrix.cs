@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,11 @@ namespace SkyARFighter.Common
                 else
                     values[i] = 0;
             }
+        }
+        [JsonProperty("values")]
+        public float[] Values
+        {
+            get => values;
         }
         private float[] values = new float[16];
     }

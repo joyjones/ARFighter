@@ -17,6 +17,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    var gameScene: GameScene {
+        get { return sceneView.scene as! GameScene }
+    }
+    
     lazy var networkCtrl: NetworkViewController = {
         return childViewControllers.lazy.flatMap({ $0 as? NetworkViewController }).first!
     }()
@@ -35,7 +39,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a new scene
 //        let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        sceneView.scene = SCNScene()
+        sceneView.scene = GameScene()
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTapFrom(recognizer:)))
         gesture.numberOfTapsRequired = 1
@@ -64,16 +68,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let result = sceneView.hitTest(tapPoint, types: .featurePoint)
         if let hitResult = result.first {
             let pos = hitResult.worldTransform.columns.3
-            insertGeometry(pos.x, pos.y, pos.z)
+            gameScene.insertGeometry(pos.x, pos.y, pos.z)
         }
-    }
-    
-    func insertGeometry(_ x: Float, _ y: Float, _ z: Float) {
-        let box = SCNBox()
-        box.width = 0.1; box.height = 0.1; box.length = 0.1
-        let node = SCNNode(geometry: box)
-        node.simdPosition = simd_float3(x, y, z)
-        sceneView.scene.rootNode.addChildNode(node)
     }
     
     func testCereal() throws {

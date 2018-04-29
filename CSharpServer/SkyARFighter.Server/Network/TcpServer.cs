@@ -88,8 +88,6 @@ namespace SkyARFighter.Server
                 }
                 catch
                 {
-                    //clients.Remove(client);
-                    //ClientConnectionChanged?.Invoke(client, false);
                     return;
                 }
                 connectedNewClient.Set();
@@ -119,33 +117,21 @@ namespace SkyARFighter.Server
                     int msgType = BitConverter.ToInt32(buffer, 0);
                     if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
                     {
-                        var str = Encoding.UTF8.GetString(buffer, 8, length - 8);
+                        var str = Encoding.UTF8.GetString(buffer, 4, length - 4);
                         var args = JsonHelper.ParseMethodParameters(mi, str);
                         mi.Invoke(player, args);
                     }
+                    ReceiveMessage(player);
                 }
-                ReceiveMessage(player);
+                else
+                {
+                    players.Remove(player);
+                    LogAppended?.Invoke($"客户端[{player.UsingSocket.RemoteEndPoint}] 断开连接。");
+                    ClientConnectionChanged?.Invoke(player, false);
+                }
             }), null);
         }
-
-        class Mat
-        {
-            public float[] matrix = new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
-        }
-
-        public void Test()
-        {
-            int msgType = 1;
-            if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
-            {
-                var mat = new Mat();
-                var inputJson = JsonConvert.SerializeObject(mat);
-                var args = JsonHelper.ParseMethodParameters(mi, inputJson);
-                
-                System.Diagnostics.Debug.WriteLine("ok");
-            }
-        }
-
+        
         private ManualResetEvent startedUp = new ManualResetEvent(false);
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;

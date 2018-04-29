@@ -33,25 +33,19 @@ namespace SkyARFighter.Common
 
         public static object[] ParseMethodParameters(MethodInfo mi, string content)
         {
-            var argVals = new Dictionary<string, JToken>();
-            var jobj = JsonConvert.DeserializeObject(content) as JObject;
-            foreach (var t in jobj.Children())
-            {
-                if (t is JProperty tp)
-                    argVals[tp.Name] = tp.Value;
-            }
+            var argVals = new List<JToken>();
+            var jarray = JsonConvert.DeserializeObject(content) as JArray;
+            foreach (JToken t in jarray.Children())
+                argVals.Add(t);
             var ps = mi.GetParameters();
             if (argVals.Count != ps.Length)
                 throw new Exception($"方法'{mi.Name}'的参数数量({ps.Length})与数据解析参数数量({argVals.Count})不一致！");
-            var mtdVals = new Dictionary<string, ParameterInfo>();
-            foreach (var p in ps)
-                mtdVals[p.Name] = p;
 
             List<object> args = new List<object>();
-            foreach (var kt in argVals)
+            for (int i = 0; i < argVals.Count; ++i)
             {
-                var pi = mtdVals[kt.Key];
-                object obj = ParseJsonObject(kt.Value, pi.ParameterType);
+                var pi = ps[i];
+                object obj = ParseJsonObject(argVals[i], pi.ParameterType);
                 args.Add(obj);
             }
             return args.ToArray();

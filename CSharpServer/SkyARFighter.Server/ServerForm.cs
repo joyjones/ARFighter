@@ -24,6 +24,7 @@ namespace SkyARFighter.Server
             Program.Server.LogAppended += Server_LogAppended;
             Program.Server.ClientConnectionChanged += Server_ClientConnectionChanged;
             //Program.Server.ReceivedClientMessage += Server_ReceivedClientMessage;
+            bnStart_Click(null, null);
         }
 
         public Player SelectedPlayer
