@@ -38,6 +38,17 @@ namespace SkyARFighter.Common
         {
             get => values;
         }
+        [JsonIgnore]
+        public Vector3 Pos
+        {
+            get => new Vector3(values[12], values[13], values[14]);
+            set
+            {
+                values[12] = value.x;
+                values[13] = value.y;
+                values[14] = value.z;
+            }
+        }
         private float[] values = new float[16];
     }
 }

@@ -114,7 +114,7 @@ namespace SkyARFighter.Server
 
                 if (length > 0)
                 {
-                    int msgType = BitConverter.ToInt32(buffer, 0);
+                    var msgType = (RemotingMethodId)BitConverter.ToInt32(buffer, 0);
                     if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
                     {
                         var str = Encoding.UTF8.GetString(buffer, 4, length - 4);
@@ -131,16 +131,27 @@ namespace SkyARFighter.Server
                 }
             }), null);
         }
-        
+
+        public GameScene RequirePlayerScene(Player player, string identityName)
+        {
+            if (scenes.TryGetValue(identityName, out GameScene scene))
+                return scene;
+            scene = new GameScene();
+            scene.AddPlayer(player);
+            scenes[scene.IdentityName] = scene;
+            return scene;
+        }
+
         private ManualResetEvent startedUp = new ManualResetEvent(false);
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;
         private List<Player> players = new List<Player>();
+        private Dictionary<string, GameScene> scenes = new Dictionary<string, GameScene>();
 
         public event Action<string> LogAppended;
         public event Action<Player, bool> ClientConnectionChanged;
         public event Action<Player, string> ReceivedClientMessage;
 
-        public static Dictionary<int, MethodInfo> MsgHandlers = new Dictionary<int, MethodInfo>();
+        public static Dictionary<RemotingMethodId, MethodInfo> MsgHandlers = new Dictionary<RemotingMethodId, MethodInfo>();
     }
 }

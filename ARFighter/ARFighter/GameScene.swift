@@ -10,11 +10,10 @@ import SceneKit
 class GameScene: SCNScene {
     
     func insertGeometry(_ x: Float, _ y: Float, _ z: Float) {
-        let box = SCNBox()
-        box.width = 0.1; box.height = 0.1; box.length = 0.1
-        let node = SCNNode(geometry: box)
+        let sphere = SCNSphere()
+        sphere.radius = 0.1
+        let node = SCNNode(geometry: sphere)
         node.simdPosition = simd_float3(x, y, z)
         rootNode.addChildNode(node)
     }
-    
 }

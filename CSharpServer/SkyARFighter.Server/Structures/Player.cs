@@ -8,30 +8,23 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Server
 {
-    public class Player
+    public partial class Player
     {
         public Player(Socket socket)
         {
+            Id = CommonMethods.Rander.Next();
             UsingSocket = socket;
         }
 
+        public long Id
+        {
+            get; private set;
+        }
         public Socket UsingSocket
         {
             get; private set;
         }
-
-        #region interfaces
-        [RemotingMethod(0x01)]
-        public void SyncCamera(Matrix mat)
-        {
-            cameraTransform.Fill(mat.Values);
-        }
-
-        [RemotingMethod(0x02)]
-        public void CreateObject(int type, Vector3 size, Matrix transform)
-        {
-        }
-        #endregion
+        
         public bool SendMessage(string msg)
         {
             if (UsingSocket.Connected)
@@ -47,6 +40,6 @@ namespace SkyARFighter.Server
             return false;
         }
 
-        private Matrix cameraTransform;
+        private Matrix cameraTransform = new Matrix();
     }
 }

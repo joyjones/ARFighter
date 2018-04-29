@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace SkyARFighter.Client
 {
-    public class SimulateClient
+    public partial class SimulateClient
     {
         public SimulateClient()
         {
@@ -90,33 +90,23 @@ namespace SkyARFighter.Client
             }), null);
         }
 
-        private void InvokeRemoteMethod(MessageType type, object argObj)
+        private void InvokeRemoteMethod(RemotingMethodId type, object argObj)
         {
-            var bs1 = BitConverter.GetBytes((int)type);
+            var data = BitConverter.GetBytes((int)type);
             var json = JsonConvert.SerializeObject(argObj);
-            var bs2 = Encoding.UTF8.GetBytes(json);
-            Array.Resize(ref bs1, bs1.Length + bs2.Length);
-            Array.Copy(bs2, 0, bs1, 4, bs2.Length);
-            socket.Send(bs1);
+            var context = Encoding.UTF8.GetBytes(json);
+            Array.Resize(ref data, data.Length + context.Length);
+            Array.Copy(context, 0, data, 4, context.Length);
+            socket.Send(data);
         }
-
-        public void SyncCameraToServer()
-        {
-            InvokeRemoteMethod(MessageType.SyncCamera, new object[] { cameraTransform });
-        }
-
-        public void InsertGeometry(int type, Vector3 size, Matrix transform)
-        {
-            InvokeRemoteMethod(MessageType.CreateObject, new object[] { type, size, transform });
-        }
-
+        
         public void Tick(object sender, ElapsedEventArgs e)
         {
             var ts = new TimeSpan(e.SignalTime.Ticks - lastElapsedTick);
             if (ts.TotalMilliseconds >= 100)
             {
                 timer.Enabled = false;
-                SyncCameraToServer();
+                Server_SyncCamera();
                 lastElapsedTick = e.SignalTime.Ticks;
             }
         }

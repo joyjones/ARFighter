@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkyARFighter.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -67,5 +68,14 @@ namespace SkyARFighter.Client
             //}
         }
 
+        private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
+        {
+            var size = new Vector3(0.1f, 0.1f, 0.1f);
+            var trans = new Matrix
+            {
+                Pos = new Vector3(1, 2, 3)
+            };
+            Program.Client.Server_CreateObject(ObjectType.标注_圆点, size, trans);
+        }
     }
 }
