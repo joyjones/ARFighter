@@ -6,26 +6,23 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyARFighter.Server
+namespace SkyARFighter.Server.Structures
 {
     public partial class Player
     {
-        [RemotingMethod(RemotingMethodId.SetupWorld)]
-        public void SetupWorld(string identityName)
+        public void Client_SetupWorld(string identityName)
         {
-            Program.Server.RequirePlayerScene(this, identityName);
+            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName });
         }
 
-        [RemotingMethod(RemotingMethodId.SyncCamera)]
-        public void SyncCamera(Matrix mat)
+        public void Client_SyncCamera(Matrix mat)
         {
-            cameraTransform.Fill(mat.Values);
+            Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
         }
 
-        [RemotingMethod(RemotingMethodId.CreateObject)]
-        public void CreateObject(ObjectType type, Vector3 size, Matrix transform)
+        public void Client_CreateSceneModel(long playerId, SceneModelType type, Vector3 size, Matrix transform)
         {
-
+            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, type, size, transform });
         }
     }
 }

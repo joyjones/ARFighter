@@ -18,7 +18,12 @@ namespace SkyARFighter.Common
             {
                 var v = ((JValue)token).Value;
                 if (v != null)
-                    obj = Convert.ChangeType(((JValue)token).Value.ToString(), objType);
+                {
+                    if (objType.IsEnum)
+                        obj = Enum.Parse(objType, v.ToString());
+                    else
+                        obj = Convert.ChangeType(v.ToString(), objType);
+                }
             }
             else if (token is JArray)
             {

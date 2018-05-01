@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyARFighter.Server
+namespace SkyARFighter.Server.Structures
 {
-    public class GameObject
+    public class Model
     {
     }
 }

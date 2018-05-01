@@ -34,20 +34,18 @@
             this.bnDisconnect = new System.Windows.Forms.Button();
             this.txbServerLogs = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.bnStart = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslClientCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.bnStart = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.txbNewMsg = new System.Windows.Forms.TextBox();
-            this.bnSendMsg = new System.Windows.Forms.Button();
             this.timerTick = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lsvClients
@@ -67,16 +65,15 @@
             // 
             // txbClientMsgs
             // 
-            this.txbClientMsgs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txbClientMsgs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txbClientMsgs.Location = new System.Drawing.Point(0, 0);
             this.txbClientMsgs.Multiline = true;
             this.txbClientMsgs.Name = "txbClientMsgs";
             this.txbClientMsgs.ReadOnly = true;
             this.txbClientMsgs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbClientMsgs.Size = new System.Drawing.Size(463, 204);
+            this.txbClientMsgs.Size = new System.Drawing.Size(463, 236);
             this.txbClientMsgs.TabIndex = 1;
+            this.txbClientMsgs.WordWrap = false;
             // 
             // bnDisconnect
             // 
@@ -111,6 +108,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "系统日志";
             // 
+            // bnStart
+            // 
+            this.bnStart.Dock = System.Windows.Forms.DockStyle.Left;
+            this.bnStart.Location = new System.Drawing.Point(3, 17);
+            this.bnStart.Name = "bnStart";
+            this.bnStart.Size = new System.Drawing.Size(75, 83);
+            this.bnStart.TabIndex = 3;
+            this.bnStart.Text = "启动";
+            this.bnStart.UseVisualStyleBackColor = true;
+            this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.panel2);
@@ -122,6 +130,15 @@
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "客户端列表";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.txbClientMsgs);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(167, 17);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(463, 236);
+            this.panel2.TabIndex = 5;
             // 
             // panel1
             // 
@@ -149,48 +166,6 @@
             this.tsslClientCount.Size = new System.Drawing.Size(70, 17);
             this.tsslClientCount.Text = "客户端数: 0";
             // 
-            // bnStart
-            // 
-            this.bnStart.Dock = System.Windows.Forms.DockStyle.Left;
-            this.bnStart.Location = new System.Drawing.Point(3, 17);
-            this.bnStart.Name = "bnStart";
-            this.bnStart.Size = new System.Drawing.Size(75, 83);
-            this.bnStart.TabIndex = 3;
-            this.bnStart.Text = "启动";
-            this.bnStart.UseVisualStyleBackColor = true;
-            this.bnStart.Click += new System.EventHandler(this.bnStart_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.bnSendMsg);
-            this.panel2.Controls.Add(this.txbNewMsg);
-            this.panel2.Controls.Add(this.txbClientMsgs);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(167, 17);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(463, 236);
-            this.panel2.TabIndex = 5;
-            // 
-            // txbNewMsg
-            // 
-            this.txbNewMsg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbNewMsg.Location = new System.Drawing.Point(6, 210);
-            this.txbNewMsg.Name = "txbNewMsg";
-            this.txbNewMsg.Size = new System.Drawing.Size(375, 21);
-            this.txbNewMsg.TabIndex = 2;
-            // 
-            // bnSendMsg
-            // 
-            this.bnSendMsg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bnSendMsg.Location = new System.Drawing.Point(387, 208);
-            this.bnSendMsg.Name = "bnSendMsg";
-            this.bnSendMsg.Size = new System.Drawing.Size(73, 23);
-            this.bnSendMsg.TabIndex = 4;
-            this.bnSendMsg.Text = "发送";
-            this.bnSendMsg.UseVisualStyleBackColor = true;
-            this.bnSendMsg.Click += new System.EventHandler(this.bnSendMsg_Click);
-            // 
             // timerTick
             // 
             this.timerTick.Interval = 500;
@@ -211,11 +186,11 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,8 +209,6 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslClientCount;
         private System.Windows.Forms.Button bnStart;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button bnSendMsg;
-        private System.Windows.Forms.TextBox txbNewMsg;
         private System.Windows.Forms.Timer timerTick;
     }
 }

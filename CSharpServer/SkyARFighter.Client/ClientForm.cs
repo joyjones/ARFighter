@@ -23,51 +23,76 @@ namespace SkyARFighter.Client
             txbServerIP.Text = "127.0.0.1";
             txbServerPort.Text = "8333";
             bnDisconnect.Enabled = false;
-            //Program.Client.ReceivedMessage += Client_ReceivedMessage;
+            tabMain.Enabled = false;
+            Program.Client.LogAppended += Client_LogAppended;
+            Program.Client.Disconnected += Client_Disconnected;
+            Program.Client.StateChanged += Client_StateChanged;
         }
 
-        private void Client_ReceivedMessage(string msg)
+        private void Client_StateChanged(SimulateClient.States state)
         {
             BeginInvoke(new Action(() =>
             {
-                txbMessages.Text += "=> " + msg + "\r\n";
+                switch (state)
+                {
+                    case SimulateClient.States.Offline:
+                        txbServerIP.Enabled = true;
+                        txbServerPort.Enabled = true;
+                        bnConnectServer.Enabled = true;
+                        bnDisconnect.Enabled = false;
+                        tabMain.SelectedIndex = 0;
+                        tabMain.Enabled = false;
+                        tsbnSetupWorld.Enabled = true;
+                        tsbnCreateModel.Enabled = false;
+                        txbMessages.Text = "";
+                        tsslConnectState.Text = "未连接";
+                        break;
+                    case SimulateClient.States.Connected:
+                        txbServerIP.Enabled = false;
+                        txbServerPort.Enabled = false;
+                        bnConnectServer.Enabled = false;
+                        bnDisconnect.Enabled = true;
+                        tabMain.Enabled = true;
+                        tsbnSetupWorld.Enabled = true;
+                        tsbnCreateModel.Enabled = false;
+                        tsslConnectState.Text = "已连接";
+                        break;
+                    case SimulateClient.States.InScene:
+                    case SimulateClient.States.SceneEdit:
+                        tsbnSetupWorld.Enabled = false;
+                        tsbnCreateModel.Enabled = true;
+                        break;
+                }
             }));
         }
 
-        private void Client_SentMessage(string msg)
+        private void Client_Disconnected()
         {
-            txbMessages.Text += "<= " + msg + "\r\n";
+            BeginInvoke(new Action(() =>
+            {
+            }));
+        }
+
+        private void Client_LogAppended(string msg)
+        {
+            BeginInvoke(new Action(() =>
+            {
+                txbMessages.Text += msg + "\r\n";
+            }));
         }
 
         private void bnConnectServer_Click(object sender, EventArgs e)
         {
             if (Program.Client.Connect(txbServerIP.Text, int.Parse(txbServerPort.Text)))
             {
-                tsslConnectState.Text = "已连接";
-                bnConnectServer.Enabled = false;
-                bnDisconnect.Enabled = true;
             }
         }
 
         private void bnDisconnect_Click(object sender, EventArgs e)
         {
             Program.Client.Disconnect();
-            tsslConnectState.Text = "未连接";
-            bnConnectServer.Enabled = true;
-            bnDisconnect.Enabled = false;
         }
-
-        private void bnSendMsg_Click(object sender, EventArgs e)
-        {
-            //if (txbNewMsg.Text.Length == 0)
-            //    return;
-            //if (Program.Client.SendMessage(txbNewMsg.Text))
-            //{
-            //    Client_SentMessage(txbNewMsg.Text);
-            //    txbNewMsg.Text = "";
-            //}
-        }
-
+        
         private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
         {
             var size = new Vector3(0.1f, 0.1f, 0.1f);
@@ -75,7 +100,12 @@ namespace SkyARFighter.Client
             {
                 Pos = new Vector3(1, 2, 3)
             };
-            Program.Client.Server_CreateObject(ObjectType.标注_圆点, size, trans);
+            Program.Client.Server_CreateObject(SceneModelType.标注_圆点, size, trans);
+        }
+
+        private void tsbnSetupWorld_Click(object sender, EventArgs e)
+        {
+            Program.Client.Server_SetupWorld("test01");
         }
     }
 }

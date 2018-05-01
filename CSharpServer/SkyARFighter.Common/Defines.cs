@@ -8,12 +8,15 @@ namespace SkyARFighter.Common
 {
     public enum RemotingMethodId
     {
+        [RemotingDirection(RemotingDirection.Both)]
         SetupWorld = 0x01,
+        [RemotingDirection(RemotingDirection.Both)]
         SyncCamera = 0x02,
-        CreateObject = 0x03
+        [RemotingDirection(RemotingDirection.Both)]
+        CreateSceneModel = 0x03
     }
 
-    public enum ObjectType
+    public enum SceneModelType
     {
         标注_圆点 = 0,
 		标注_圆圈,
@@ -37,5 +40,21 @@ namespace SkyARFighter.Common
 
         public RemotingMethodId MethodId { get; private set; }
     }
-    
+
+    public enum RemotingDirection
+    {
+        C2S,
+        S2C,
+        Both
+    }
+    public class RemotingDirectionAttribute : Attribute
+    {
+        public RemotingDirectionAttribute(RemotingDirection dir)
+        {
+            Direction = dir;
+        }
+
+        public RemotingDirection Direction { get; private set; }
+    }
+
 }

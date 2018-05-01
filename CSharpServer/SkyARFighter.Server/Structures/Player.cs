@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Server.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,40 +7,28 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyARFighter.Server
+namespace SkyARFighter.Server.Structures
 {
     public partial class Player
     {
-        public Player(Socket socket)
+        public Player(PlayerPeer peer)
         {
+            Peer = peer;
+            Peer.HostPlayer = this;
             Id = CommonMethods.Rander.Next();
-            UsingSocket = socket;
         }
 
         public long Id
         {
             get; private set;
         }
-        public Socket UsingSocket
+
+        public PlayerPeer Peer
         {
             get; private set;
         }
-        
-        public bool SendMessage(string msg)
-        {
-            if (UsingSocket.Connected)
-            {
-                var bytes = Encoding.Unicode.GetBytes(msg);
-                var header = BitConverter.GetBytes(bytes.Length);
-                var data = new byte[header.Length + bytes.Length];
-                Array.Copy(header, data, header.Length);
-                Array.Copy(bytes, 0, data, 4, bytes.Length);
-                UsingSocket.Send(data);
-                return true;
-            }
-            return false;
-        }
 
+        private Scene curScene = null;
         private Matrix cameraTransform = new Matrix();
     }
 }

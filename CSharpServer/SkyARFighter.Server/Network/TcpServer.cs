@@ -1,32 +1,17 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using SkyARFighter.Common;
+﻿using SkyARFighter.Common;
+using SkyARFighter.Server.Network;
+using SkyARFighter.Server.Structures;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace SkyARFighter.Server
+namespace SkyARFighter.Server.Network
 {
     public class TcpServer
     {
-        static TcpServer()
-        {
-            foreach (var mi in typeof(Player).GetMethods())
-            {
-                if (mi.GetCustomAttribute(typeof(RemotingMethodAttribute)) is RemotingMethodAttribute attr)
-                {
-                    MsgHandlers[attr.MethodId] = mi;
-                }
-            }
-        }
-
         public TcpServer()
         {
         }
@@ -34,11 +19,6 @@ namespace SkyARFighter.Server
         public bool Running
         {
             get => startedUp.WaitOne(0);
-        }
-
-        public IEnumerable<Player> Players
-        {
-            get => players;
         }
 
         public void Start()
@@ -53,10 +33,11 @@ namespace SkyARFighter.Server
                     var point = new IPEndPoint(IPAddress.Any, 8333);
                     serverSocket.Bind(point);
                     serverSocket.Listen(10);
+
                     startedUp.Set();
                     LogAppended?.Invoke("服务器启动成功。");
 
-                    Listen();
+                    BeginListen();
 
                     while (startedUp.WaitOne(50));
 
@@ -71,87 +52,45 @@ namespace SkyARFighter.Server
             if (!Running)
                 return;
             startedUp.Reset();
-            players.Clear();
             LogAppended?.Invoke("服务器已停止。");
         }
 
-        private void Listen()
+        private void BeginListen()
         {
             serverSocket.BeginAccept(new AsyncCallback(ar =>
             {
-                Player player = null;
                 try
                 {
                     var sock = serverSocket.EndAccept(ar);
-                    player = new Player(sock);
-                    players.Add(player);
+                    var peer = CreatePeerInstance(sock);
+
+                    connectedNewClient.Set();
+
+                    ClientConnected?.Invoke(peer);
+                    LogAppended?.Invoke($"客户端[{sock.RemoteEndPoint}] 连接成功。");
                 }
                 catch
                 {
                     return;
                 }
-                connectedNewClient.Set();
 
-                ClientConnectionChanged?.Invoke(player, true);
-                LogAppended?.Invoke($"客户端[{player.UsingSocket.RemoteEndPoint}] 连接成功。");
-
-                ReceiveMessage(player);
-                Listen();
+                BeginListen();
             }), null);
         }
 
-        private void ReceiveMessage(Player player)
+        private PlayerPeer CreatePeerInstance(Socket socket)
         {
-            var buffer = new byte[1024];
-            player.UsingSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback((ar) =>
-            {
-                int length = 0;
-                try
-                {
-                    length = player.UsingSocket.EndReceive(ar);
-                }
-                catch { return; }
-
-                if (length > 0)
-                {
-                    var msgType = (RemotingMethodId)BitConverter.ToInt32(buffer, 0);
-                    if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
-                    {
-                        var str = Encoding.UTF8.GetString(buffer, 4, length - 4);
-                        var args = JsonHelper.ParseMethodParameters(mi, str);
-                        mi.Invoke(player, args);
-                    }
-                    ReceiveMessage(player);
-                }
-                else
-                {
-                    players.Remove(player);
-                    LogAppended?.Invoke($"客户端[{player.UsingSocket.RemoteEndPoint}] 断开连接。");
-                    ClientConnectionChanged?.Invoke(player, false);
-                }
-            }), null);
-        }
-
-        public GameScene RequirePlayerScene(Player player, string identityName)
-        {
-            if (scenes.TryGetValue(identityName, out GameScene scene))
-                return scene;
-            scene = new GameScene();
-            scene.AddPlayer(player);
-            scenes[scene.IdentityName] = scene;
-            return scene;
+            var peer = new PlayerPeer(socket);
+            Program.Game.EnterPlayer(peer);
+            return peer;
         }
 
         private ManualResetEvent startedUp = new ManualResetEvent(false);
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;
-        private List<Player> players = new List<Player>();
-        private Dictionary<string, GameScene> scenes = new Dictionary<string, GameScene>();
 
         public event Action<string> LogAppended;
-        public event Action<Player, bool> ClientConnectionChanged;
-        public event Action<Player, string> ReceivedClientMessage;
+        public event Action<PlayerPeer> ClientConnected;
 
-        public static Dictionary<RemotingMethodId, MethodInfo> MsgHandlers = new Dictionary<RemotingMethodId, MethodInfo>();
     }
 }

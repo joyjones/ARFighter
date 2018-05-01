@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyARFighter.Common.ModelInfos
+namespace SkyARFighter.Common.DataInfos
 {
-    class SceneInfo
+    public class SceneInfo
     {
+
     }
 }

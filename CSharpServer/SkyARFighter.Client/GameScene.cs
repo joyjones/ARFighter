@@ -10,10 +10,18 @@ namespace SkyARFighter.Client
 {
     public class GameScene
     {
-        public GameScene()
+        public GameScene(string identityName)
         {
         }
 
+        public string IdentityName
+        {
+            get; private set;
+        }
         
+        public void AddModel()
+        {
+
+        }
     }
 }

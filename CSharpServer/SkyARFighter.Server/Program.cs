@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SkyARFighter.Server.Network;
+using SkyARFighter.Server.Structures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,5 +27,6 @@ namespace SkyARFighter.Server
         }
 
         public static TcpServer Server { get; } = new TcpServer();
+        public static Game Game { get; } = new Game();
     }
 }

@@ -37,19 +37,19 @@
             this.bnDisconnect = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslConnectState = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.tsMenuItemCreateBox = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbnCreateModel = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tsbnCreateModel_Box = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbnSetupWorld = new System.Windows.Forms.ToolStripButton();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.statusStrip1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // bnConnectServer
@@ -93,8 +93,9 @@
             this.txbMessages.Name = "txbMessages";
             this.txbMessages.ReadOnly = true;
             this.txbMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbMessages.Size = new System.Drawing.Size(438, 229);
+            this.txbMessages.Size = new System.Drawing.Size(438, 290);
             this.txbMessages.TabIndex = 7;
+            this.txbMessages.WordWrap = false;
             // 
             // bnDisconnect
             // 
@@ -122,15 +123,15 @@
             this.tsslConnectState.Size = new System.Drawing.Size(44, 17);
             this.tsslConnectState.Text = "未连接";
             // 
-            // tabControl1
+            // tabMain
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(12, 68);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(452, 322);
-            this.tabControl1.TabIndex = 11;
+            this.tabMain.Controls.Add(this.tabPage1);
+            this.tabMain.Controls.Add(this.tabPage2);
+            this.tabMain.Location = new System.Drawing.Point(12, 68);
+            this.tabMain.Name = "tabMain";
+            this.tabMain.SelectedIndex = 0;
+            this.tabMain.Size = new System.Drawing.Size(452, 322);
+            this.tabMain.TabIndex = 11;
             // 
             // tabPage1
             // 
@@ -144,28 +145,6 @@
             this.tabPage1.Text = "场景";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.txbMessages);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(444, 235);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "日志";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1,
-            this.toolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(3, 3);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(438, 25);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -174,37 +153,61 @@
             this.panel1.Size = new System.Drawing.Size(438, 265);
             this.panel1.TabIndex = 1;
             // 
-            // toolStripButton2
+            // toolStrip1
             // 
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(76, 22);
-            this.toolStripButton2.Text = "发送消息";
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbnSetupWorld,
+            this.tsbnCreateModel});
+            this.toolStrip1.Location = new System.Drawing.Point(3, 3);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(438, 25);
+            this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripDropDownButton1
+            // tsbnCreateModel
             // 
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMenuItemCreateBox});
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(85, 22);
-            this.toolStripDropDownButton1.Text = "创建物体";
+            this.tsbnCreateModel.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbnCreateModel_Box});
+            this.tsbnCreateModel.Enabled = false;
+            this.tsbnCreateModel.Image = ((System.Drawing.Image)(resources.GetObject("tsbnCreateModel.Image")));
+            this.tsbnCreateModel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbnCreateModel.Name = "tsbnCreateModel";
+            this.tsbnCreateModel.Size = new System.Drawing.Size(85, 22);
+            this.tsbnCreateModel.Text = "创建物体";
             // 
-            // tsMenuItemCreateBox
+            // tsbnCreateModel_Box
             // 
-            this.tsMenuItemCreateBox.Name = "tsMenuItemCreateBox";
-            this.tsMenuItemCreateBox.Size = new System.Drawing.Size(180, 22);
-            this.tsMenuItemCreateBox.Text = "Box";
-            this.tsMenuItemCreateBox.Click += new System.EventHandler(this.tsMenuItemCreateBox_Click);
+            this.tsbnCreateModel_Box.Name = "tsbnCreateModel_Box";
+            this.tsbnCreateModel_Box.Size = new System.Drawing.Size(180, 22);
+            this.tsbnCreateModel_Box.Text = "Box";
+            this.tsbnCreateModel_Box.Click += new System.EventHandler(this.tsMenuItemCreateBox_Click);
+            // 
+            // tsbnSetupWorld
+            // 
+            this.tsbnSetupWorld.Image = ((System.Drawing.Image)(resources.GetObject("tsbnSetupWorld.Image")));
+            this.tsbnSetupWorld.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbnSetupWorld.Name = "tsbnSetupWorld";
+            this.tsbnSetupWorld.Size = new System.Drawing.Size(76, 22);
+            this.tsbnSetupWorld.Text = "启动场景";
+            this.tsbnSetupWorld.Click += new System.EventHandler(this.tsbnSetupWorld_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.txbMessages);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(444, 296);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "日志";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(476, 415);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabMain);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.bnDisconnect);
             this.Controls.Add(this.label1);
@@ -216,13 +219,13 @@
             this.Load += new System.EventHandler(this.ClientForm_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.tabMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -238,14 +241,14 @@
         private System.Windows.Forms.Button bnDisconnect;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsslConnectState;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton tsbnSetupWorld;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-        private System.Windows.Forms.ToolStripMenuItem tsMenuItemCreateBox;
+        private System.Windows.Forms.ToolStripDropDownButton tsbnCreateModel;
+        private System.Windows.Forms.ToolStripMenuItem tsbnCreateModel_Box;
     }
 }
 

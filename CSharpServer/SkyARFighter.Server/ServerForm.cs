@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SkyARFighter.Server.Network;
+using SkyARFighter.Server.Structures;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,14 +24,33 @@ namespace SkyARFighter.Server
         private void ServerForm_Load(object sender, EventArgs e)
         {
             Program.Server.LogAppended += Server_LogAppended;
-            Program.Server.ClientConnectionChanged += Server_ClientConnectionChanged;
-            //Program.Server.ReceivedClientMessage += Server_ReceivedClientMessage;
+            Program.Server.ClientConnected += Server_ClientConnected;
             bnStart_Click(null, null);
         }
 
-        public Player SelectedPlayer
+        private PlayerPeer selectedPeer = null;
+        public PlayerPeer SelectedPeer
         {
-            get; private set;
+            get => selectedPeer;
+            set
+            {
+                if (selectedPeer != value)
+                {
+                    selectedPeer = value;
+                    if (selectedPeer == null)
+                        txbClientMsgs.Text = "";
+                    else
+                        txbClientMsgs.Text = string.Join("\r\n", selectedPeer.Logs);
+                    foreach (ListViewItem i in lsvClients.Items)
+                    {
+                        if (i.Tag == selectedPeer)
+                        {
+                            i.Selected = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void timerTick_Tick(object sender, EventArgs e)
@@ -38,41 +59,47 @@ namespace SkyARFighter.Server
             //    txbClientMsgs.Text = clientMessages[SelectedPlayer];
         }
 
-        private void Server_ClientConnectionChanged(Player player, bool connected)
+        private void Server_ClientConnected(PlayerPeer peer)
         {
-            if (connected)
-            {
-                player.SendMessage("你好啊客户端，我是服务器~");
-                    //Server_SentClientMessage(player, msg);
-            }
-
+            peer.Disconnected += Peer_Disconnected;
+            peer.LogAppended += Peer_LogAppended;
             BeginInvoke(new Action(() =>
             {
-                lsvClients.Items.Clear();
-                foreach (var c in Program.Server.Players)
-                {
-                    var lvi = new ListViewItem(c.UsingSocket.RemoteEndPoint.ToString());
-                    lvi.Tag = c;
-                    if (c == SelectedPlayer)
-                        lvi.Selected = true;
-                    lsvClients.Items.Add(lvi);
-                }
-                if (lsvClients.Items.Count > 0 && SelectedPlayer == null)
-                {
-                    lsvClients.Items[0].Selected = true;
-                }
+                var lvi = new ListViewItem(peer.ToString()) { Tag = peer };
+                lsvClients.Items.Add(lvi);
+                if (SelectedPeer == null)
+                    SelectedPeer = peer;
                 tsslClientCount.Text = "客户端数: " + lsvClients.Items.Count;
             }));
         }
 
-        private void Server_ReceivedClientMessage(Socket client, string msg)
+        private void Peer_LogAppended(PlayerPeer peer, string arg2)
         {
-            clientMessages[client] += "=> " + msg + "\r\n";
+            if (peer != SelectedPeer)
+                return;
+            BeginInvoke(new Action(() =>
+            {
+                txbClientMsgs.Text = string.Join("\r\n", peer.Logs);
+            }));
         }
 
-        private void Server_SentClientMessage(Socket client, string msg)
+        private void Peer_Disconnected(PlayerPeer peer)
         {
-            clientMessages[client] += "<= " + msg + "\r\n";
+            BeginInvoke(new Action(() =>
+            {
+                for (int i = 0; i < lsvClients.Items.Count; ++i)
+                {
+                    if (lsvClients.Items[i].Tag == peer)
+                    {
+                        lsvClients.Items.RemoveAt(i);
+                        if (SelectedPeer == peer)
+                            SelectedPeer = null;
+                        break;
+                    }
+                }
+                txbServerLogs.Text += $"客户端{peer.ToString()}断开连接。\r\n";
+                tsslClientCount.Text = "客户端数: " + lsvClients.Items.Count;
+            }));
         }
 
         private void Server_LogAppended(string msg)
@@ -86,15 +113,9 @@ namespace SkyARFighter.Server
         private void lsvClients_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lsvClients.SelectedItems.Count == 0)
-            {
-                SelectedPlayer = null;
-                txbClientMsgs.Text = "";
-            }
+                SelectedPeer = null;
             else
-            {
-                SelectedPlayer = lsvClients.SelectedItems[0].Tag as Player;
-                //txbClientMsgs.Text = clientMessages[SelectedPlayer];
-            }
+                SelectedPeer = lsvClients.SelectedItems[0].Tag as PlayerPeer;
         }
 
         private void bnStart_Click(object sender, EventArgs e)
@@ -112,16 +133,5 @@ namespace SkyARFighter.Server
                 bnStart.Text = "停止";
             }
         }
-
-        private void bnSendMsg_Click(object sender, EventArgs e)
-        {
-            if (SelectedPlayer == null || txbNewMsg.Text.Length == 0)
-                return;
-            SelectedPlayer.SendMessage(txbNewMsg.Text);
-            txbNewMsg.Text = "";
-        }
-
-        private Dictionary<Socket, string> clientMessages = new Dictionary<Socket, string>();
-
     }
 }
