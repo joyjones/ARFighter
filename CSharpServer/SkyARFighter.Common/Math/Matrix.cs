@@ -15,12 +15,11 @@ namespace SkyARFighter.Common
         }
         public Matrix(float[] vals)
         {
-            Fill(vals);
+            Array.Copy(vals, 0, values, 0, 16);
         }
-        public void Fill(float[] vals)
+        public void CopyFrom(Matrix mat)
         {
-            for (int i = 0; i < 16; ++i)
-                values[i] = vals[i];
+            Array.Copy(mat.values, 0, values, 0, 16);
         }
         public void Identity()
         {
@@ -33,10 +32,29 @@ namespace SkyARFighter.Common
                     values[i] = 0;
             }
         }
-        [JsonProperty("values")]
-        public float[] Values
+        [JsonProperty("r1")]
+        public float[] R1
         {
-            get => values;
+            get => values.Take(4).ToArray();
+            set => Array.Copy(value, 0, values, 0, 4);
+        }
+        [JsonProperty("r2")]
+        public float[] R2
+        {
+            get => values.Skip(4).Take(4).ToArray();
+            set => Array.Copy(value, 0, values, 4, 4);
+        }
+        [JsonProperty("r3")]
+        public float[] R3
+        {
+            get => values.Skip(8).Take(4).ToArray();
+            set => Array.Copy(value, 0, values, 8, 4);
+        }
+        [JsonProperty("r4")]
+        public float[] R4
+        {
+            get => values.Skip(12).ToArray();
+            set => Array.Copy(value, 0, values, 12, 4);
         }
         [JsonIgnore]
         public Vector3 Pos

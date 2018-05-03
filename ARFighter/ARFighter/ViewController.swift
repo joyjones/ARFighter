@@ -37,8 +37,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
-        // Create a new scene
-//        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        // Create scene
         sceneView.scene = GameScene()
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTapFrom(recognizer:)))
@@ -68,28 +67,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let result = sceneView.hitTest(tapPoint, types: .featurePoint)
         if let hitResult = result.first {
             let pos = hitResult.worldTransform.columns.3
-            gameScene.insertGeometry(pos.x, pos.y, pos.z)
+            gameScene.mainPlayer!.createModel(type: .标注_圆点, pos: simd_float3(pos.x, pos.y, pos.z))
         }
     }
     
     func testCereal() throws {
-        
-//        var mat = matrix_float4x4()
-//        mat.columns.0.x = 15;
-//        let mt = MatrixTrans(mat: mat)
-//
-//        let bs = mt.toBytes()
-//        let mt2 = MatrixTrans.fromBytes(data: bs)
-//        print(mt2)
-//
-//        return
-//        var encoder = CerealEncoder()
-//        try encoder.encode(mt, forKey: "matrix")
-//        let result = encoder.toData()
-//
-//        var decoder = try CerealDecoder(data: result)
-//        let obj: MatrixTrans? = try decoder.decode(key: "obj")
-//        print(obj)
+//        let json = "[{\"values\":\"0,0,0,1\"},{\"pos\":\"1,2,3\",\"scale\":\"1.5\"},\"test01\",145]"
+//        let json = "[{\"r1\":[1.0,0.0,0.0,0.0],\"r2\":[0.0,1.0,0.0,0.0],\"r3\":[0.0,0.0,1.0,0.0],\"r4\":[0.0,0.0,0.0,1.0]}]"
+//        let jarray = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
+//        print(jarray![0] as! [String: [Float]])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -125,7 +111,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             mat.columns.0.x = 1; mat.columns.1.y = 1; mat.columns.2.z = 1; mat.columns.3.w = 1
         }
         let data = NMMatrix(mat: mat).toJSONString()!
-        networkCtrl.sendMessage(cmd: ProtoType.SyncCamera, data: data)
+//        networkCtrl.sendMessage(cmd: ProtoType.SyncCamera, data: data)
     }
     
     func getCameraTransform() -> matrix_float4x4 {

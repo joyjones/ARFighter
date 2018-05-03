@@ -13,6 +13,12 @@ namespace SkyARFighter.Client
 {
     public partial class SimulateClient
     {
+        [RemotingMethod(RemotingMethodId.Welcome)]
+        public void InitPlayer(long playerId)
+        {
+            playerInfo = new Common.DataInfos.PlayerInfo();
+            playerInfo.Id = playerId;
+        }
         [RemotingMethod(RemotingMethodId.SetupWorld)]
         public void SetupWorld(string identityName)
         {
@@ -26,7 +32,7 @@ namespace SkyARFighter.Client
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]
-        public void CreateSceneModel(long playerId, SceneModelType type, Vector3 size, Matrix transform)
+        public void CreateSceneModel(long playerId, SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
         }
     }

@@ -23,9 +23,9 @@ namespace SkyARFighter.Client
             InvokeRemoteMethod(RemotingMethodId.SyncCamera, new object[] { cameraTransform });
         }
 
-        public void Server_CreateObject(SceneModelType type, Vector3 size, Matrix transform)
+        public void Server_CreateObject(SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
-            InvokeRemoteMethod(RemotingMethodId.CreateSceneModel, new object[] { type, size, transform });
+            InvokeRemoteMethod(RemotingMethodId.CreateSceneModel, new object[] { type, pos, scale, rotate });
         }
     }
 }

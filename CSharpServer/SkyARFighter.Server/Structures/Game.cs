@@ -1,4 +1,5 @@
-﻿using SkyARFighter.Server.Network;
+﻿using SkyARFighter.Common;
+using SkyARFighter.Server.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace SkyARFighter.Server.Structures
         public Player EnterPlayer(PlayerPeer peer)
         {
             var player = new Player(peer);
+            player.Client_Welcome(player.Id);
             return player;
         }
 

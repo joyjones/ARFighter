@@ -95,12 +95,10 @@ namespace SkyARFighter.Client
         
         private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
         {
-            var size = new Vector3(0.1f, 0.1f, 0.1f);
-            var trans = new Matrix
-            {
-                Pos = new Vector3(1, 2, 3)
-            };
-            Program.Client.Server_CreateObject(SceneModelType.标注_圆点, size, trans);
+            var pos = new Vector3(1, 2, 3);
+            var scale = new Vector3(0.1f, 0.1f, 0.1f);
+            var rotate = new Vector4(0, 0, 0, 0);
+            Program.Client.Server_CreateObject(Program.Client.Info.Id, SceneModelType.标注_圆点, pos, scale, rotate);
         }
 
         private void tsbnSetupWorld_Click(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,10 +58,9 @@ namespace SkyARFighter.Client
             }
         }
 
-        public bool Connected
-        {
-            get => socket != null && socket.Connected;
-        }
+        public bool Connected => socket != null && socket.Connected;
+
+        public PlayerInfo Info => playerInfo;
 
         public bool Connect(string ipAddress, int port)
         {
@@ -183,6 +183,7 @@ namespace SkyARFighter.Client
         private Matrix cameraTransform;
         private System.Timers.Timer timer;
         private GameScene scene = null;
+        private PlayerInfo playerInfo = null;
         public event Action<string> LogAppended;
         public event Action<States> StateChanged;
         public event Action Disconnected;

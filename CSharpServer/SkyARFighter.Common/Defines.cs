@@ -8,12 +8,14 @@ namespace SkyARFighter.Common
 {
     public enum RemotingMethodId
     {
+        [RemotingDirection(RemotingDirection.S2C)]
+        Welcome = 0x01,
         [RemotingDirection(RemotingDirection.Both)]
-        SetupWorld = 0x01,
+        SetupWorld = 0x02,
         [RemotingDirection(RemotingDirection.Both)]
-        SyncCamera = 0x02,
+        SyncCamera = 0x03,
         [RemotingDirection(RemotingDirection.Both)]
-        CreateSceneModel = 0x03
+        CreateSceneModel = 0x04
     }
 
     public enum SceneModelType

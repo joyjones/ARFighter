@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Common.DataInfos
 {
-    class PlayerInfo
+    public class PlayerInfo
     {
+        public long Id;
     }
 }

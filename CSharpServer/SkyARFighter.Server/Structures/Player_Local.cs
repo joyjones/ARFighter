@@ -20,7 +20,7 @@ namespace SkyARFighter.Server.Structures
         [RemotingMethod(RemotingMethodId.SyncCamera)]
         public void SyncCamera(Matrix mat)
         {
-            cameraTransform.Fill(mat.Values);
+            cameraTransform.CopyFrom(mat);
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]

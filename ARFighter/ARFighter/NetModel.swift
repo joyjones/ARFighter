@@ -9,13 +9,17 @@
 import SceneKit
 import ObjectMapper
 
-//import JSONCodable
-//import Cereal
-
-enum ProtoType: Int {
-    case SyncCamera = 1
-    case CreateObject
-    case TransformObject
+class GameObject {
+    
+    var id: Int64 = generateAutoId()
+    
+    static func generateAutoId() -> Int64 {
+        let ct = Calendar.current
+        let coms = ct.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date())
+        let tail = arc4random_uniform(100000)
+        let idstr = String(format: "%04d%02d%02d%02d%02d%2d%05d", coms.year!, coms.month!, coms.day!, coms.hour!, coms.minute!, coms.second!, tail)
+        return Int64(idstr)!
+    }
 }
 
 extension float4 {
@@ -32,17 +36,37 @@ extension float4 {
 }
 
 extension matrix_float4x4{
-    func toString() -> String{
-        return "\(columns.0.toString());\(columns.1.toString());\(columns.2.toString());\(columns.3.toString())"
+    func toJson() -> [String: [Float]]{
+        return [
+            "r1": [columns.0.x, columns.0.y, columns.0.z, columns.0.w],
+            "r2": [columns.1.x, columns.1.y, columns.1.z, columns.1.w],
+            "r3": [columns.2.x, columns.2.y, columns.2.z, columns.2.w],
+            "r4": [columns.3.x, columns.3.y, columns.3.z, columns.3.w],
+        ]
     }
-    static func fromString(str: String) -> matrix_float4x4 {
-        let ss = str.split(separator: ";")
+    static func fromJson(json: [String: [Float]]) -> matrix_float4x4 {
         var mat = matrix_float4x4()
-        mat.columns.0 = float4.fromString(str: String(ss[0]))
-        mat.columns.1 = float4.fromString(str: String(ss[0]))
-        mat.columns.2 = float4.fromString(str: String(ss[0]))
-        mat.columns.3 = float4.fromString(str: String(ss[0]))
+        var ary = json["r1"]!
+        mat.columns.0 = float4(ary[0], ary[1], ary[2], ary[3])
+        ary = json["r2"]!
+        mat.columns.1 = float4(ary[0], ary[1], ary[2], ary[3])
+        ary = json["r3"]!
+        mat.columns.2 = float4(ary[0], ary[1], ary[2], ary[3])
+        ary = json["r4"]!
+        mat.columns.3 = float4(ary[0], ary[1], ary[2], ary[3])
         return mat
+    }
+}
+
+extension simd_float3 {
+    static func fromJson(json: [String: Float]) -> simd_float3 {
+        return simd_float3(Float(json["x"]!), Float(json["y"]!), Float(json["z"]!))
+    }
+}
+
+extension simd_float4 {
+    static func fromJson(json: [String: Float]) -> simd_float4 {
+        return simd_float4(Float(json["z"]!), Float(json["y"]!), Float(json["z"]!), Float(json["w"]!))
     }
 }
 
