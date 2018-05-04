@@ -2,6 +2,7 @@
 using SkyARFighter.Server.Structures;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -22,11 +23,19 @@ namespace SkyARFighter.Server
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Server.Test();
+
+            Game = new Game();
             Application.Run(new ServerForm());
         }
 
         public static TcpServer Server { get; } = new TcpServer();
-        public static Game Game { get; } = new Game();
+        public static Game Game
+        {
+            get; private set;
+        }
+        public static string ConfigsFile
+        {
+            get { return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath; }
+        }
     }
 }

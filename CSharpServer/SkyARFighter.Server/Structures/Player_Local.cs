@@ -24,9 +24,9 @@ namespace SkyARFighter.Server.Structures
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]
-        public void CreateSceneModel(SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void CreateSceneModel(long typeId, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
-            curScene.AddModel(Id, type, pos, scale, rotate);
+            curScene.AddModel(Id, typeId, pos, scale, rotate);
         }
     }
 }

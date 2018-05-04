@@ -26,9 +26,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
         }
 
-        public void Client_CreateSceneModel(long playerId, SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void Client_CreateSceneModel(long playerId, long typeId, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
-            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, type, pos, scale, rotate });
+            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, typeId, pos, scale, rotate });
         }
     }
 }

@@ -32,10 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Chloe, Version=2.27.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chloe.2.27.0\lib\net40\Chloe.dll</HintPath>
+    </Reference>
+    <Reference Include="Chloe.MySql, Version=2.27.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chloe.MySql.2.27.0\lib\net40\Chloe.MySql.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,6 +58,9 @@
     <Compile Include="Structures\Game.cs" />
     <Compile Include="Network\PlayerPeer.cs" />
     <Compile Include="Structures\GameObject.cs" />
+    <Compile Include="Structures\Marker.cs" />
+    <Compile Include="Structures\Model.cs" />
+    <Compile Include="Structures\SceneMarker.cs" />
     <Compile Include="Structures\SceneModel.cs" />
     <Compile Include="Structures\Scene.cs" />
     <Compile Include="Structures\Player_Local.cs" />

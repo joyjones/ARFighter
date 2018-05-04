@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using SkyARFighter.Server.Network;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,12 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Server.Structures
 {
-    public partial class Player : GameObject
+    public partial class Player : GameObject<PlayerInfo>
     {
+        public Player(PlayerInfo info)
+            : base(info)
+        {
+        }
         public Player(PlayerPeer peer)
         {
             Peer = peer;
