@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Server.Structures
 {
-    public partial class Player
+    public partial class Player : GameObject
     {
         public Player(PlayerPeer peer)
         {

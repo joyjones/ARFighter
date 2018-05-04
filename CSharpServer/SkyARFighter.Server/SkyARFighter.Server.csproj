@@ -50,7 +50,8 @@
   <ItemGroup>
     <Compile Include="Structures\Game.cs" />
     <Compile Include="Network\PlayerPeer.cs" />
-    <Compile Include="Structures\Model.cs" />
+    <Compile Include="Structures\GameObject.cs" />
+    <Compile Include="Structures\SceneModel.cs" />
     <Compile Include="Structures\Scene.cs" />
     <Compile Include="Structures\Player_Local.cs" />
     <Compile Include="Structures\Player_Remote.cs" />

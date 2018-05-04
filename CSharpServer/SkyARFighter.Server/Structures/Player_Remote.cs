@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.Welcome, new object[] { playerId });
         }
 
-        public void Client_SetupWorld(string identityName)
+        public void Client_SetupWorld(string identityName, SceneModelInfo[] models)
         {
-            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName });
+            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName, models });
         }
 
         public void Client_SyncCamera(Matrix mat)
@@ -25,9 +26,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
         }
 
-        public void Client_CreateSceneModel(long playerId, SceneModelType type, Vector3 size, Matrix transform)
+        public void Client_CreateSceneModel(long playerId, SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
-            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, type, size, transform });
+            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, type, pos, scale, rotate });
         }
     }
 }

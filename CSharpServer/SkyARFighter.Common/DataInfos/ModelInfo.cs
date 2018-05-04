@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Common.DataInfos
 {
-    class ModelInfo
+    public class ModelInfo
     {
     }
 }

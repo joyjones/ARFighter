@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace SkyARFighter.Client
             playerInfo.Id = playerId;
         }
         [RemotingMethod(RemotingMethodId.SetupWorld)]
-        public void SetupWorld(string identityName)
+        public void SetupWorld(string identityName, ModelInfo[] models)
         {
             timer.Enabled = true;
             scene = new GameScene(identityName);

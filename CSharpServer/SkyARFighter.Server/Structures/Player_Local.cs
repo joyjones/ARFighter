@@ -14,7 +14,7 @@ namespace SkyARFighter.Server.Structures
         public void SetupWorld(string identityName)
         {
             curScene = Program.Game.RequirePlayerScene(this, identityName);
-            Client_SetupWorld(identityName);
+            Client_SetupWorld(identityName, curScene.Models.Select(m => m.Info).ToArray());
         }
 
         [RemotingMethod(RemotingMethodId.SyncCamera)]
@@ -24,9 +24,9 @@ namespace SkyARFighter.Server.Structures
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]
-        public void CreateSceneModel(SceneModelType type, Vector3 size, Matrix transform)
+        public void CreateSceneModel(SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
         {
-            curScene.AddModel(Id, type, size, transform);
+            curScene.AddModel(Id, type, pos, scale, rotate);
         }
     }
 }
