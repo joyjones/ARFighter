@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="flX-EQ-Suo">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </arscnView>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ffj-vM-SGo">
                                 <rect key="frame" x="0.0" y="20" width="375" height="176"/>
@@ -37,7 +37,6 @@
                         <constraints>
                             <constraint firstItem="flX-EQ-Suo" firstAttribute="top" secondItem="AzI-ux-sfB" secondAttribute="top" id="5HR-NS-hbt"/>
                             <constraint firstItem="flX-EQ-Suo" firstAttribute="leading" secondItem="V4g-bg-OOB" secondAttribute="leading" id="E8L-jd-c8A"/>
-                            <constraint firstItem="flX-EQ-Suo" firstAttribute="top" secondItem="V4g-bg-OOB" secondAttribute="top" id="GAM-CF-HuF"/>
                             <constraint firstItem="V4g-bg-OOB" firstAttribute="trailing" secondItem="flX-EQ-Suo" secondAttribute="trailing" id="OXw-eD-UXz"/>
                             <constraint firstItem="ffj-vM-SGo" firstAttribute="top" secondItem="V4g-bg-OOB" secondAttribute="top" id="VKC-Fw-ndO"/>
                             <constraint firstItem="ffj-vM-SGo" firstAttribute="leading" secondItem="V4g-bg-OOB" secondAttribute="leading" id="flZ-qu-WiJ"/>

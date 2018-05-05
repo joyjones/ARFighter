@@ -6,6 +6,7 @@
 //  Copyright © 2018年 tjwd. All rights reserved.
 //
 import SceneKit
+import ARKit
 
 class Player: GameObject {
 
@@ -20,4 +21,7 @@ class Player: GameObject {
         cameraTransform = mat
     }
     
+    func tick(spanTime: Double) {
+
+    }
 }

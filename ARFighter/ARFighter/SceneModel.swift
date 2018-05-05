@@ -7,6 +7,12 @@
 //
 import SceneKit
 
+class SceneModelInfo {
+    var pos = simd_float3()
+    var scale = simd_float3()
+    var rotate = simd_float4()
+}
+
 class SceneModel: GameObject {
     
     enum Kind: Int32 {

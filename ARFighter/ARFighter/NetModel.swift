@@ -7,7 +7,7 @@
 //
 
 import SceneKit
-import ObjectMapper
+//import ObjectMapper
 
 class GameObject {
     
@@ -17,7 +17,7 @@ class GameObject {
         let ct = Calendar.current
         let coms = ct.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date())
         let tail = arc4random_uniform(100000)
-        let idstr = String(format: "%04d%02d%02d%02d%02d%2d%05d", coms.year!, coms.month!, coms.day!, coms.hour!, coms.minute!, coms.second!, tail)
+        let idstr = String(format: "%04d%02d%02d%02d%02d%02d%05d", coms.year!, coms.month!, coms.day!, coms.hour!, coms.minute!, coms.second!, tail)
         return Int64(idstr)!
     }
 }
@@ -56,11 +56,46 @@ extension matrix_float4x4{
         mat.columns.3 = float4(ary[0], ary[1], ary[2], ary[3])
         return mat
     }
+    func toGLK() -> GLKMatrix4{
+        var gm = GLKMatrix4()
+        gm.m00 = columns.0.x
+        gm.m01 = columns.0.y
+        gm.m02 = columns.0.z
+        gm.m03 = columns.0.w
+        
+        gm.m10 = columns.1.x
+        gm.m11 = columns.1.y
+        gm.m12 = columns.1.z
+        gm.m13 = columns.1.w
+        
+        gm.m20 = columns.2.x
+        gm.m21 = columns.2.y
+        gm.m22 = columns.2.z
+        gm.m23 = columns.2.w
+        
+        gm.m30 = columns.3.x
+        gm.m31 = columns.3.y
+        gm.m32 = columns.3.z
+        gm.m33 = columns.3.w
+        return gm;
+    }
+    
+    static func fromGLK(_ mat: GLKMatrix4) -> matrix_float4x4 {
+        return float4x4(
+            float4(mat.m00,mat.m01,mat.m02,mat.m03),
+            float4(mat.m10,mat.m11,mat.m12,mat.m13),
+            float4(mat.m20,mat.m21,mat.m22,mat.m23),
+            float4(mat.m30,mat.m31,mat.m32,mat.m33)
+        );
+    }
 }
 
 extension simd_float3 {
     static func fromJson(json: [String: Float]) -> simd_float3 {
         return simd_float3(Float(json["x"]!), Float(json["y"]!), Float(json["z"]!))
+    }
+    func toJson() -> [String: Float] {
+        return ["x": x, "y": y, "z": z]
     }
 }
 
@@ -68,36 +103,39 @@ extension simd_float4 {
     static func fromJson(json: [String: Float]) -> simd_float4 {
         return simd_float4(Float(json["z"]!), Float(json["y"]!), Float(json["z"]!), Float(json["w"]!))
     }
-}
-
-struct NMMatrix: Mappable {
-    var values: [Float] = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
-    
-    init?(map: Map){
-    }
-    
-    init(mat: matrix_float4x4){
-        for r in 0...3 {
-            for c in 0...3 {
-                values[r * 4 + c] = mat[r][c]
-            }
-        }
-    }
-    
-    mutating func toMat() -> matrix_float4x4 {
-        var mat = matrix_float4x4();
-        for r in 0...3 {
-            for c in 0...3 {
-                mat[r][c] = values[r * 4 + c]
-            }
-        }
-        return mat
-    }
-    
-    mutating func mapping(map: Map){
-        values <- map["values"]
+    func toJson() -> [String: Float] {
+        return ["x": x, "y": y, "z": z, "w": w]
     }
 }
+//
+//struct NMMatrix: Mappable {
+//    var values: [Float] = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
+//
+//    init?(map: Map){
+//    }
+//
+//    init(mat: matrix_float4x4){
+//        for r in 0...3 {
+//            for c in 0...3 {
+//                values[r * 4 + c] = mat[r][c]
+//            }
+//        }
+//    }
+//
+//    mutating func toMat() -> matrix_float4x4 {
+//        var mat = matrix_float4x4();
+//        for r in 0...3 {
+//            for c in 0...3 {
+//                mat[r][c] = values[r * 4 + c]
+//            }
+//        }
+//        return mat
+//    }
+//
+//    mutating func mapping(map: Map){
+//        values <- map["values"]
+//    }
+//}
 
 //struct MatrixTrans {
 //    var rows: [float4]

@@ -14,8 +14,6 @@ class NetworkViewController: UIViewController, NetworkDelegate {
     
 //    private var socketServer: TcpSocketServer?
     
-    private(set) var isConnected = false
-    
     @IBOutlet weak var txbOutput: UITextView!
     @IBOutlet weak var btnConnectServer: UIButton!
     @IBOutlet weak var btnCreateServer: UIButton!
@@ -23,7 +21,8 @@ class NetworkViewController: UIViewController, NetworkDelegate {
     
     override func viewDidLoad() {
         SocketClient.instance.delegate = self as NetworkDelegate
-        SocketClient.instance.connectServer(address: "10.211.55.5", port: 8333)
+//        SocketClient.instance.connectServer(address: "10.211.55.5", port: 8333)
+        SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
     }
     
     @IBAction func connectServer(_ sender: UIButton) {

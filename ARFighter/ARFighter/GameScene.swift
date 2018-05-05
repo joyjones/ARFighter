@@ -6,6 +6,7 @@
 //  Copyright © 2018年 tjwd. All rights reserved.
 //
 import SceneKit
+import ARKit
 
 class GameScene: SCNScene, RemotingMethodDelegate {
     
@@ -16,8 +17,9 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         case SceneEdit
     }
     
-    override init() {
+    init(session: ARSession) {
         super.init()
+        self.session = session
         initialize()
     }
     
@@ -29,14 +31,30 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     private func initialize(){
         mainPlayer = MainPlayer(scene: self)
         SocketClient.instance.delegateMethods = self
+        enableTimer(enabled: true)
     }
     
-    func invokeMethod(methodId id: Int32, jsonArgs args: [Any]) {
-        switch RemotingMethodId(rawValue: id)! {
+    func enableTimer(enabled: Bool) {
+        if enabled {
+            timer = Timer.scheduledTimer(timeInterval: tickInterval, target: self, selector: (#selector(GameScene.tick)), userInfo: nil, repeats: true)
+        }
+        else{
+            timer?.invalidate()
+            timer = nil
+        }
+    }
+    
+    @objc func tick() {
+        mainPlayer!.tick(spanTime: tickInterval)
+    }
+    
+    func invokeMethod(methodId: RemotingMethodId, args: [Any]) {
+        switch methodId {
         case .Welcome:
             mainPlayer!.initPlayer(playerId: args[0] as! Int64)
         case .SetupWorld:
-            mainPlayer!.setupWorld(identityName: args[0] as! String)
+            let ms = args[1]
+            mainPlayer!.setupWorld(identityName: args[0] as! String, models: [SceneModelInfo]())
         case .SyncCamera:
             let pid = args[0] as! Int64
             players[pid]?.cameraTransform = matrix_float4x4.fromJson(json: args[1] as! [String: [Float]])
@@ -51,10 +69,6 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         }
     }
     
-    func getPlayer(by id: Int64) -> Player? {
-        return players[id]
-    }
-    
     func addModel(creatorId: Int64, type: SceneModel.Kind, pos: simd_float3, scale: simd_float3, rotate: simd_float4) {
         let model = SceneModel(type: type, scene: self, creator: creatorId)
         model.position = pos
@@ -63,6 +77,9 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         models[model.id] = model
     }
     
+    var session: ARSession?
+    let tickInterval = 0.1
+    var timer: Timer?
     var mainPlayer: MainPlayer?
     var players = [Int64: Player]()
     var models = [Int64: SceneModel]()

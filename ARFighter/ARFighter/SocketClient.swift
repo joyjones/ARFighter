@@ -14,7 +14,7 @@ protocol NetworkDelegate {
 }
 
 protocol RemotingMethodDelegate {
-    func invokeMethod(methodId id: Int32, jsonArgs args: [Any])
+    func invokeMethod(methodId: RemotingMethodId, args: [Any])
 }
 
 class SocketClient {
@@ -25,13 +25,15 @@ class SocketClient {
     var delegate: NetworkDelegate?
     var delegateMethods: RemotingMethodDelegate?
     
+    let updateQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".network")
+
     func connectServer(address: String, port: Int32){
         client = TCPClient(address: address, port: port)
         
         switch client!.connect(timeout: 5) {
         case .success:
             isConnected = true
-            DispatchQueue.main.async {
+            updateQueue.async {
                 self.delegate?.alert(msg: "连接成功！")
                 self.beginReadMessage()
             }
@@ -48,21 +50,30 @@ class SocketClient {
     }
     
     private func beginReadMessage() {
-        if var bytes = client!.read(1024, timeout: 1) {
-            let data = Data(bytes: bytes)
-            let methodId = Int32(bigEndian: data.withUnsafeBytes { $0.pointee })
-            bytes.removeSubrange(1...4)
-            let json = String(bytes: bytes, encoding: .utf8)!
-            let args = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
-            delegateMethods?.invokeMethod(methodId: methodId, jsonArgs: args!)
+        while isConnected {
+            if var bytes = client!.read(1024, timeout: 1) {
+                let data = Data(bytes: bytes)
+                let methodId = RemotingMethodId(rawValue: data.withUnsafeBytes { $0.pointee })!
+                bytes.removeSubrange(0...3)
+                let json = String(bytes: bytes, encoding: .utf8)!
+                let args = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
+                
+                print("+++ invoking local method: \(methodId), args: \(json)")
+                delegateMethods?.invokeMethod(methodId: methodId, args: args!)
+            }
         }
-        beginReadMessage()
     }
     
-    func sendMessage(cmd: RemotingMethodId, context: String){
-        var type = UInt32(cmd.rawValue)
-        var data = [UInt8](Data(buffer: UnsafeBufferPointer(start: &type, count: 1)))
-        data.append(contentsOf: Array(context.utf8))
-        _ = client?.send(data: data)
+    func sendMessage(cmd: RemotingMethodId, context: Any){
+        let data = try? JSONSerialization.data(withJSONObject: context, options: [])
+        let context = String(data: data!, encoding: .utf8)!
+        var type = Int32(cmd.rawValue)
+        var bytes = [UInt8](Data(buffer: UnsafeBufferPointer(start: &type, count: 1)))
+        bytes.append(contentsOf: Array(context.utf8))
+        
+        if cmd != RemotingMethodId.SyncCamera {
+            print("+++ invoking remote method: \(cmd), args: \(context)")
+        }
+        _ = client?.send(data: bytes)
     }
 }
