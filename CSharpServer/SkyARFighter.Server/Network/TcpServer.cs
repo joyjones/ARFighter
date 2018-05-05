@@ -55,6 +55,19 @@ namespace SkyARFighter.Server.Network
             LogAppended?.Invoke("服务器已停止。");
         }
 
+        public void Log(string msg)
+        {
+            if (LogAppended == null)
+                stackedLogs.Enqueue(msg);
+            else
+            {
+                while (stackedLogs.Count > 0)
+                    LogAppended?.Invoke(stackedLogs.Dequeue());
+            }
+            if (!string.IsNullOrEmpty(msg))
+                LogAppended?.Invoke(msg);
+        }
+
         private void BeginListen()
         {
             serverSocket.BeginAccept(new AsyncCallback(ar =>
@@ -88,6 +101,7 @@ namespace SkyARFighter.Server.Network
         private ManualResetEvent startedUp = new ManualResetEvent(false);
         private AutoResetEvent connectedNewClient = new AutoResetEvent(false);
         private Socket serverSocket;
+        private Queue<string> stackedLogs = new Queue<string>();
 
         public event Action<string> LogAppended;
         public event Action<PlayerPeer> ClientConnected;

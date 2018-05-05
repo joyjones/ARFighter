@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
@@ -78,7 +79,7 @@ namespace SkyARFighter.Client
             }
             State = States.Connected;
             
-            BeginReceiveMessage();
+            ReceiveMessage();
             return true;
         }
 
@@ -106,65 +107,92 @@ namespace SkyARFighter.Client
             Array.Copy(bytes, 0, data, 4, bytes.Length);
             return socket.Send(data) > 0;
         }
-        
-        private void BeginReceiveMessage()
-        {
-            var buffer = new byte[1024];
-            socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback((ar) =>
-            {
-                int length = 0;
-                try
-                {
-                    length = socket.EndReceive(ar);
-                }
-                catch
-                {
-                    LogAppended?.Invoke("断开连接");
-                    Disconnected?.Invoke();
-                    return;
-                }
 
-                if (length > 0)
+        private void ReceiveMessage()
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+            {
+                Thread.CurrentThread.Name = "客户端通信处理线程";
+                var buffer = new byte[4096];
+                while (socket.Connected)
                 {
-                    try
+                    waitingNextMessage.Reset();
+
+                    socket.BeginReceive(buffer, 0, 8, SocketFlags.None, new AsyncCallback(ar =>
                     {
+                        try
+                        {
+                            if (socket.EndReceive(ar) == 0)
+                                throw new Exception();
+                        }
+                        catch
+                        {
+                            LogAppended?.Invoke("断开连接");
+                            Disconnected?.Invoke();
+                            return;
+                        }
+
                         var msgType = (RemotingMethodId)BitConverter.ToInt32(buffer, 0);
-                        if (MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
+                        int length = BitConverter.ToInt32(buffer, 4);
+                        if (length > 0)
                         {
-                            var str = Encoding.UTF8.GetString(buffer, 4, length - 4);
-                            var args = JsonHelper.ParseMethodParameters(mi, str);
-                            LogAppended?.Invoke($"调用本地方法：{mi.Name}, 参数：{str}");
-                            mi.Invoke(this, args);
+                            int offset = 0;
+                            do
+                            {
+                                int contextLen = socket.Receive(buffer, offset, length - offset, SocketFlags.None);
+                                if (contextLen == 0)
+                                {
+                                    LogAppended?.Invoke("断开连接");
+                                    Disconnected?.Invoke();
+                                    return;
+                                }
+                                offset += contextLen;
+                            } while (offset < length);
+
+                            if (!MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
+                                LogAppended?.Invoke("收到未注册的的远程方法调用请求：" + msgType);
+                            else
+                            {
+                                try
+                                {
+                                    var str = Encoding.UTF8.GetString(buffer, 0, length);
+                                    var args = JsonHelper.ParseMethodParameters(mi, str);
+                                    LogAppended?.Invoke($"调用远程方法：{mi.Name}, 参数：{str}");
+
+                                    mi.Invoke(this, args);
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogAppended?.Invoke("远程方法调用异常：" + ex.Message);
+                                }
+                            }
                         }
-                        else
-                        {
-                            LogAppended?.Invoke("收到未注册的的本地方法调用请求：" + msgType);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogAppended?.Invoke("本地方法调用异常：" + ex.Message);
-                    }
-                    BeginReceiveMessage();
+
+                        waitingNextMessage.Set();
+                    }), null);
+
+                    while (socket.Connected && !waitingNextMessage.WaitOne(50)) ;
                 }
-                else
-                {
-                    LogAppended?.Invoke("断开连接");
-                    Disconnected?.Invoke();
-                }
-            }), null);
+            }));
         }
 
-        private void InvokeRemoteMethod(RemotingMethodId type, object argObj)
+        public void InvokeRemoteMethod(RemotingMethodId methodId, object args)
         {
-            var data = BitConverter.GetBytes((int)type);
-            var json = JsonConvert.SerializeObject(argObj);
-            var context = Encoding.UTF8.GetBytes(json);
-            Array.Resize(ref data, data.Length + context.Length);
-            Array.Copy(context, 0, data, 4, context.Length);
-            socket.Send(data);
+            using (var sw = new System.IO.MemoryStream())
+            {
+                var bsType = BitConverter.GetBytes((int)methodId);
+                var json = JsonConvert.SerializeObject(args);
+                var bsCtx = Encoding.UTF8.GetBytes(json);
 
-            LogAppended?.Invoke($"调用远程方法：{type}, 参数：{json}");
+                sw.Write(bsType, 0, bsType.Length);
+                var bsLen = BitConverter.GetBytes(bsCtx.Length);
+                sw.Write(bsLen, 0, bsLen.Length);
+                sw.Write(bsCtx, 0, bsCtx.Length);
+                var bsSend = sw.GetBuffer();
+                socket.Send(bsSend);
+
+                LogAppended?.Invoke($"调用远程方法：{methodId}, 参数：{json}");
+            }
         }
 
         public void Tick(object sender, ElapsedEventArgs e)
@@ -184,6 +212,7 @@ namespace SkyARFighter.Client
         private System.Timers.Timer timer;
         private GameScene scene = null;
         private PlayerInfo playerInfo = null;
+        private ManualResetEvent waitingNextMessage = new ManualResetEvent(false);
         public event Action<string> LogAppended;
         public event Action<States> StateChanged;
         public event Action Disconnected;
