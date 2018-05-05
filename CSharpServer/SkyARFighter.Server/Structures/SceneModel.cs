@@ -22,40 +22,34 @@ namespace SkyARFighter.Server.Structures
         }
         public Vector3 Pos
         {
-            get => curPos;
+            get => new Vector3(Info.PosX, Info.PosY, Info.PosZ);
             set
             {
-                curPos = value;
-                Info.PosX = curPos.x;
-                Info.PosY = curPos.y;
-                Info.PosZ = curPos.z;
+                Info.PosX = value.x;
+                Info.PosY = value.y;
+                Info.PosZ = value.z;
             }
         }
         public Vector3 Rotation
         {
-            get => curRotation;
+            get => new Vector3(Info.RotationX, Info.RotationY, Info.RotationZ);
             set
             {
-                curRotation = value;
-                Info.RotationX = curRotation.x;
-                Info.RotationY = curRotation.y;
-                Info.RotationZ = curRotation.z;
+                Info.RotationX = value.x;
+                Info.RotationY = value.y;
+                Info.RotationZ = value.z;
             }
         }
         public Vector3 Scale
         {
-            get => curScale;
+            get => new Vector3(Info.ScaleX, Info.ScaleY, Info.ScaleZ);
             set
             {
-                curScale = value;
-                Info.ScaleX = curScale.x;
-                Info.ScaleY = curScale.y;
-                Info.ScaleZ = curScale.z;
+                Info.ScaleX = value.x;
+                Info.ScaleY = value.y;
+                Info.ScaleZ = value.z;
             }
         }
 
-        private Vector3 curPos = new Vector3();
-        private Vector3 curRotation = new Vector3();
-        private Vector3 curScale = new Vector3();
     }
 }

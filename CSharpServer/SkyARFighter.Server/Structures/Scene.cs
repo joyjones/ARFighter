@@ -29,6 +29,8 @@ namespace SkyARFighter.Server.Structures
         {
             foreach (var mi in SceneMarker.Records)
             {
+                if (mi.SceneId != Id)
+                    continue;
                 var sm = new SceneMarker(this, mi);
                 markers[sm.ParentMarker.Info.Name] = sm;
                 if (StartupName == null)
@@ -42,34 +44,60 @@ namespace SkyARFighter.Server.Structures
         }
         public void AddPlayer(Player player)
         {
+            if (player.CurScene != null)
+                player.CurScene.RemovePlayer(player);
+            player.CurScene = this;
             players[player.Id] = player;
         }
-        public void AddModel(long playerId, long typeId, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void RemovePlayer(Player player)
         {
-            var modelInfo = Model.GetDataInfo(typeId);
-            var smi = new SceneModelInfo()
-            {
-                SceneId = Id,
-                ModelId = typeId,
-                PosX = pos.x,
-                PosY = pos.y,
-                PosZ = pos.z,
-                ScaleX = scale.x,
-                ScaleY = scale.y,
-                ScaleZ = scale.z,
-                RotationX = rotate.x,
-                RotationY = rotate.y,
-                RotationZ = rotate.z,
-                CreatePlayerId = playerId
-            };
-            var model = new SceneModel(this, smi);
+            players.Remove(player.Id);
+        }
+        public SceneModel GetModel(long id)
+        {
+            models.TryGetValue(id, out SceneModel model);
+            return model;
+        }
+        public void AddModel(SceneModelInfo info)
+        {
+            var modelInfo = Model.GetDataInfo(info.ModelId);
+            if (modelInfo == null)
+                return;
+            info.SceneId = Id;
+            var model = new SceneModel(this, info);
+            model.Info.Save(ParentGame.DB);
             models[model.Id] = model;
+
+            foreach (var plr in players.Values.ToArray())
+            {
+                if (plr.Id == info.CreatePlayerId)
+                    continue;
+                plr.Client_CreateSceneModel(info);
+            }
+        }
+        public void TransformModel(long playerId, long modelId, Vector3 pos, Vector3 rotation, Vector3 scale)
+        {
+            var model = GetModel(modelId);
+            if (model == null)
+                return;
+            if (pos != null)
+                model.Pos = pos;
+            if (rotation != null)
+                model.Rotation = rotation;
+            if (scale != null)
+                model.Scale = scale;
+            model.Info.Save(ParentGame.DB);
 
             foreach (var plr in players.Values.ToArray())
             {
                 if (plr.Id == playerId)
                     continue;
-                plr.Client_CreateSceneModel(playerId, typeId, pos, scale, rotate);
+                if (pos != null)
+                    plr.Client_MoveSceneModel(playerId, modelId, pos);
+                if (rotation != null)
+                    plr.Client_RotateSceneModel(playerId, modelId, rotation);
+                if (scale != null)
+                    plr.Client_ScaleSceneModel(playerId, modelId, scale);
             }
         }
 

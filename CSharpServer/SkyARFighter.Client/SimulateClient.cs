@@ -59,6 +59,8 @@ namespace SkyARFighter.Client
             }
         }
 
+        public GameScene Scene => scene;
+
         public bool Connected => socket != null && socket.Connected;
 
         public PlayerInfo Info => playerInfo;
@@ -118,7 +120,7 @@ namespace SkyARFighter.Client
                 {
                     waitingNextMessage.Reset();
 
-                    socket.BeginReceive(buffer, 0, 8, SocketFlags.None, new AsyncCallback(ar =>
+                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ar =>
                     {
                         try
                         {
@@ -136,28 +138,16 @@ namespace SkyARFighter.Client
                         int length = BitConverter.ToInt32(buffer, 4);
                         if (length > 0)
                         {
-                            int offset = 0;
-                            do
-                            {
-                                int contextLen = socket.Receive(buffer, offset, length - offset, SocketFlags.None);
-                                if (contextLen == 0)
-                                {
-                                    LogAppended?.Invoke("断开连接");
-                                    Disconnected?.Invoke();
-                                    return;
-                                }
-                                offset += contextLen;
-                            } while (offset < length);
-
                             if (!MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
                                 LogAppended?.Invoke("收到未注册的的远程方法调用请求：" + msgType);
                             else
                             {
                                 try
                                 {
-                                    var str = Encoding.UTF8.GetString(buffer, 0, length);
+                                    var context = buffer.Skip(8).Take(length).ToArray();
+                                    var str = Encoding.UTF8.GetString(context, 0, context.Length);
                                     var args = JsonHelper.ParseMethodParameters(mi, str);
-                                    LogAppended?.Invoke($"调用远程方法：{mi.Name}, 参数：{str}");
+                                    LogAppended?.Invoke($"调用本地方法：{mi.Name}, 参数：{str}");
 
                                     mi.Invoke(this, args);
                                 }
@@ -216,6 +206,7 @@ namespace SkyARFighter.Client
         public event Action<string> LogAppended;
         public event Action<States> StateChanged;
         public event Action Disconnected;
+        public event Action SceneContentChanged;
         public static Dictionary<RemotingMethodId, MethodInfo> MsgHandlers = new Dictionary<RemotingMethodId, MethodInfo>();
     }
 }

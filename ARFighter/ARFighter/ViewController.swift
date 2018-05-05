@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 import ARKit
 import SwiftSocket
-import ObjectMapper
+//import ObjectMapper
 //import Cereal
 
 class ViewController: UIViewController, ARSCNViewDelegate {
@@ -79,7 +79,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let result = sceneView.hitTest(tapPoint, types: .featurePoint)
         if let hitResult = result.first {
             let pos = hitResult.worldTransform.columns.3
-            gameScene.mainPlayer!.createModel(type: .标注_圆点, pos: simd_float3(pos.x, pos.y, pos.z))
+            gameScene.mainPlayer!.createModel(templateId: 1, pos: simd_float3(pos.x, pos.y, pos.z))
         }
     }
     

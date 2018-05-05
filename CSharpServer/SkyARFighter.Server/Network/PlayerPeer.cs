@@ -62,7 +62,7 @@ namespace SkyARFighter.Server.Network
                 {
                     waitingNextMessage.Reset();
 
-                    socket.BeginReceive(buffer, 0, 8, SocketFlags.None, new AsyncCallback(ar =>
+                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ar =>
                     {
                         try
                         {
@@ -80,26 +80,14 @@ namespace SkyARFighter.Server.Network
                         int length = BitConverter.ToInt32(buffer, 4);
                         if (length > 0)
                         {
-                            int offset = 0;
-                            do
-                            {
-                                int contextLen = socket.Receive(buffer, offset, length - offset, SocketFlags.None);
-                                if (contextLen == 0)
-                                {
-                                    LogAppended?.Invoke(this, "断开连接");
-                                    Disconnected?.Invoke(this);
-                                    return;
-                                }
-                                offset += contextLen;
-                            } while (offset < length);
-
                             if (!MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
                                 LogAppended?.Invoke(this, "收到未注册的的远程方法调用请求：" + msgType);
                             else
                             {
                                 try
                                 {
-                                    var str = Encoding.UTF8.GetString(buffer, 0, length);
+                                    var context = buffer.Skip(8).Take(length).ToArray();
+                                    var str = Encoding.UTF8.GetString(context, 0, context.Length);
                                     var args = JsonHelper.ParseMethodParameters(mi, str);
                                     LogAppended?.Invoke(this, $"调用远程方法：{mi.Name}, 参数：{str}");
 

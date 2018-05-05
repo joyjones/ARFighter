@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,11 @@ namespace SkyARFighter.Server.Structures
         [RemotingMethod(RemotingMethodId.SetupWorld)]
         public void SetupWorld(string identityName)
         {
-            curScene = Program.Game.RequirePlayerScene(this, identityName);
-            Client_SetupWorld(identityName, curScene.Models.Select(m => m.Info).ToArray());
+            Program.Game.RequirePlayerScene(this, identityName);
+            if (CurScene != null)
+            {
+                Client_SetupWorld(identityName, CurScene.Info, CurScene.Models.Select(m => m.Info).ToArray());
+            }
         }
 
         [RemotingMethod(RemotingMethodId.SyncCamera)]
@@ -24,9 +28,36 @@ namespace SkyARFighter.Server.Structures
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]
-        public void CreateSceneModel(long typeId, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void CreateSceneModel(SceneModelInfo info)
         {
-            curScene.AddModel(Id, typeId, pos, scale, rotate);
+            if (CurScene == null)
+                return;
+            info.CreatePlayerId = Id;
+            CurScene.AddModel(info);
+        }
+
+        [RemotingMethod(RemotingMethodId.MoveSceneModel)]
+        public void MoveSceneModel(long modelId, Vector3 pos)
+        {
+            if (CurScene == null)
+                return;
+            CurScene.TransformModel(Id, modelId, pos, null, null);
+        }
+
+        [RemotingMethod(RemotingMethodId.RotateSceneModel)]
+        public void RotateSceneModel(long modelId, Vector3 rotation)
+        {
+            if (CurScene == null)
+                return;
+            CurScene.TransformModel(Id, modelId, null, rotation, null);
+        }
+
+        [RemotingMethod(RemotingMethodId.ScaleSceneModel)]
+        public void ScaleSceneModel(long modelId, Vector3 scale)
+        {
+            if (CurScene == null)
+                return;
+            CurScene.TransformModel(Id, modelId, null, null, scale);
         }
     }
 }

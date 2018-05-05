@@ -8,6 +8,19 @@
 import SceneKit
 import ARKit
 
+class SceneInfo {
+    var id: Int64?
+    var name: String?
+    
+    static func fromJson(json: [String: Any]) -> SceneInfo {
+        let info = SceneInfo()
+        info.id = json["id"] as? Int64
+        info.name = json["name"] as? String
+        return info
+    }
+}
+
+
 class GameScene: SCNScene, RemotingMethodDelegate {
     
     enum States {
@@ -34,6 +47,10 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         enableTimer(enabled: true)
     }
     
+    var isReadyForPlay: Bool {
+        return info != nil
+    }
+    
     func enableTimer(enabled: Bool) {
         if enabled {
             timer = Timer.scheduledTimer(timeInterval: tickInterval, target: self, selector: (#selector(GameScene.tick)), userInfo: nil, repeats: true)
@@ -53,30 +70,53 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         case .Welcome:
             mainPlayer!.initPlayer(playerId: args[0] as! Int64)
         case .SetupWorld:
-            let ms = args[1]
-            mainPlayer!.setupWorld(identityName: args[0] as! String, models: [SceneModelInfo]())
+            startupName = args[0] as? String
+            info = SceneInfo.fromJson(json: args[1] as! [String: Any])
+            let json = args[2] as! [Any]
+            for mi in json {
+                let info = SceneModelInfo.fromJson(json: mi as! [String: Any])
+                models[info.id!] = SceneModel(info: info, scene: self)
+            }
+            mainPlayer!.state = .ScenePlaying
         case .SyncCamera:
             let pid = args[0] as! Int64
             players[pid]?.cameraTransform = matrix_float4x4.fromJson(json: args[1] as! [String: [Float]])
         case .CreateSceneModel:
-            addModel(
-                creatorId: args[0] as! Int64,
-                type: SceneModel.Kind(rawValue: args[1] as! Int32)!,
-                pos: simd_float3.fromJson(json: args[2] as! [String: Float]),
-                scale: simd_float3.fromJson(json: args[3] as! [String: Float]),
-                rotate: simd_float4.fromJson(json: args[4] as! [String: Float])
-            )
+            _ = addModel(info: SceneModelInfo.fromJson(json: args[0] as! [String: Any]))
+        case .MoveSceneModel:
+            transformModel(playerId: args[0] as! Int64, modelId: args[1] as! Int64,
+                           pos: simd_float3.fromJson(json: args[2] as! [String: Any]), scale: nil, rotation: nil)
+        case .ScaleSceneModel:
+            transformModel(playerId: args[0] as! Int64, modelId: args[1] as! Int64,
+                           pos: nil, scale: simd_float3.fromJson(json: args[2] as! [String: Any]), rotation: nil)
+        case .RotateSceneModel:
+            transformModel(playerId: args[0] as! Int64, modelId: args[1] as! Int64,
+                           pos: nil, scale: nil, rotation: simd_float3.fromJson(json: args[2] as! [String: Any]))
         }
     }
     
-    func addModel(creatorId: Int64, type: SceneModel.Kind, pos: simd_float3, scale: simd_float3, rotate: simd_float4) {
-        let model = SceneModel(type: type, scene: self, creator: creatorId)
-        model.position = pos
-        model.scale = scale
-        model.rotation = rotate
+    func addModel(info: SceneModelInfo) -> SceneModel {
+        let model = SceneModel(info: info, scene: self)
         models[model.id] = model
+        return model
     }
     
+    func transformModel(playerId: Int64, modelId: Int64, pos: simd_float3?, scale: simd_float3?, rotation: simd_float3?) {
+        if let model = models[modelId] {
+            if pos != nil {
+                model.position = pos!
+            }
+            if scale != nil {
+                model.scale = scale!
+            }
+            if rotation != nil {
+                model.rotation = rotation!
+            }
+        }
+    }
+    
+    var info: SceneInfo?
+    var startupName: String?
     var session: ARSession?
     let tickInterval = 0.1
     var timer: Timer?

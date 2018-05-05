@@ -9,10 +9,13 @@ import SceneKit
 import ARKit
 
 enum RemotingMethodId: Int32 {
-    case Welcome = 1
+    case Welcome = 0x01
     case SetupWorld
     case SyncCamera
-    case CreateSceneModel
+    case CreateSceneModel = 0x10
+    case MoveSceneModel
+    case ScaleSceneModel
+    case RotateSceneModel
 }
 
 enum PlayerState {
@@ -48,18 +51,19 @@ class MainPlayer: Player {
         }
     }
     
-    func setupWorld(identityName: String, models: [SceneModelInfo]){
-        for smi in models {
-            parentScene?.addModel(creatorId: 1, type: .标注_圆点, pos: smi.pos, scale: smi.scale, rotate: smi.rotate)
+    func createModel(templateId: Int64, pos: simd_float3) {
+        if parentScene == nil || !parentScene!.isReadyForPlay {
+            return
         }
-        state = .ScenePlaying
-    }
-    
-    func createModel(type: SceneModel.Kind, pos: simd_float3) {
-        let scale = simd_float3(1)
-        let rotate = simd_float4(0)
-        parentScene?.addModel(creatorId: id, type: type, pos: pos, scale: scale, rotate: rotate)
-        server_createSceneModel(type: type, pos: pos, scale: scale, rotate: rotate)
+        let smi = SceneModelInfo()
+        smi.create_player_id = id
+        smi.model_id = templateId
+        smi.pos = pos
+        smi.rotation = simd_float3(0)
+        smi.scale = simd_float3(1)
+        if let model = parentScene?.addModel(info: smi) {
+            server_createSceneModel(model: model)
+        }
     }
     
     override func tick(spanTime: Double) {
@@ -79,14 +83,8 @@ class MainPlayer: Player {
         SocketClient.instance.sendMessage(cmd: .SyncCamera, context: [mat.toJson()])
     }
     
-    func server_createSceneModel(type: SceneModel.Kind, pos: simd_float3, scale: simd_float3, rotate: simd_float4){
-        let dic: [Any] = [
-            type.rawValue,
-            pos.toJson(),
-            scale.toJson(),
-            rotate.toJson()
-        ]
-        SocketClient.instance.sendMessage(cmd: .CreateSceneModel, context: dic)
+    func server_createSceneModel(model: SceneModel){
+        SocketClient.instance.sendMessage(cmd: .CreateSceneModel, context: [model.toJson()])
     }
     
     var state = PlayerState.Initial

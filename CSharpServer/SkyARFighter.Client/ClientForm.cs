@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +28,15 @@ namespace SkyARFighter.Client
             Program.Client.LogAppended += Client_LogAppended;
             Program.Client.Disconnected += Client_Disconnected;
             Program.Client.StateChanged += Client_StateChanged;
+            Program.Client.SceneContentChanged += Client_SceneContentChanged;
+        }
+
+        private void Client_SceneContentChanged()
+        {
+            BeginInvoke(new Action(() =>
+            {
+                pnlScene.Refresh();
+            }));
         }
 
         private void Client_StateChanged(SimulateClient.States state)
@@ -95,15 +105,89 @@ namespace SkyARFighter.Client
         
         private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
         {
-            var pos = new Vector3(1, 2, 3);
-            var scale = new Vector3(0.1f, 0.1f, 0.1f);
-            var rotate = new Vector4(0, 0, 0, 0);
-            Program.Client.Server_CreateObject(SceneModelType.标注_圆点, pos, scale, rotate);
+            var info = new SceneModelInfo();
+            info.PosX = 0.1f;
+            info.PosY = 0.2f;
+            info.PosZ = 0.3f;
+            info.ScaleX = info.ScaleY = info.ScaleZ = 0.1f;
+            info.RotationX = info.RotationY = info.RotationZ = 0;
+            Program.Client.Server_CreateSceneModel(info);
         }
 
         private void tsbnSetupWorld_Click(object sender, EventArgs e)
         {
-            Program.Client.Server_SetupWorld("test01");
+            Program.Client.Server_SetupWorld("test02");
+        }
+
+        private const float MetersPerPixel = 0.01f;
+        private Dictionary<SceneModelInfo, RectangleF> modelRects = new Dictionary<SceneModelInfo, RectangleF>();
+        private SceneModelInfo selectedModel = null;
+        private Point? dragOffset = null;
+        private Font tipFont = new Font(new FontFamily("微软雅黑"), 8);
+        private void pnlScene_Paint(object sender, PaintEventArgs e)
+        {
+            Point ptOrigin = new Point(pnlScene.Width / 2, pnlScene.Height / 2);
+            e.Graphics.DrawLine(Pens.LightGray, new Point(0, ptOrigin.Y), new Point(pnlScene.Width, ptOrigin.Y));
+            e.Graphics.DrawLine(Pens.LightGray, new Point(ptOrigin.X, 0), new Point(ptOrigin.X, pnlScene.Height));
+
+            var scene = Program.Client.Scene;
+            if (scene == null)
+                return;
+            modelRects.Clear();
+            foreach (var model in scene.Models)
+            {
+                var pos = new PointF(
+                    ptOrigin.X + model.PosX / MetersPerPixel,
+                    ptOrigin.Y + model.PosZ / MetersPerPixel
+                );
+                var size = 10.0f;
+                var rc = new RectangleF(pos.X - size * 0.5f, pos.Y - size * 0.5f, size, size);
+                e.Graphics.FillRectangle(Brushes.OrangeRed, rc);
+                string tip = $"[{model.PosX},{model.PosZ}]";
+                var tipSize = e.Graphics.MeasureString(tip, tipFont);
+                var tipPos = new Point((int)(pos.X - tipSize.Width / 2), (int)rc.Bottom);
+                e.Graphics.DrawString(tip, tipFont, Brushes.Black, tipPos);
+                modelRects[model] = rc;
+            }
+        }
+
+        private void pnlScene_MouseDown(object sender, MouseEventArgs e)
+        {
+            selectedModel = null;
+            dragOffset = null;
+            foreach (var mr in modelRects)
+            {
+                var rc = mr.Value;
+                if (rc.Contains(e.X, e.Y))
+                {
+                    selectedModel = mr.Key;
+                    var center = new PointF(rc.X + rc.Width * 0.5f, rc.Y + rc.Height * 0.5f);
+                    dragOffset = new Point(e.X - (int)center.X, e.Y - (int)center.Y);
+                    break;
+                }
+            }
+        }
+
+        private void pnlScene_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragOffset = null;
+        }
+
+        private void pnlScene_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point ptOrigin = new Point(pnlScene.Width / 2, pnlScene.Height / 2);
+            if (e.Button == MouseButtons.Left)
+            {
+                if (selectedModel != null)
+                {
+                    var centerNew = new Point(e.X - dragOffset.Value.X, e.Y - dragOffset.Value.Y);
+                    selectedModel.PosX = (centerNew.X - ptOrigin.X) * MetersPerPixel;
+                    selectedModel.PosZ = (centerNew.Y - ptOrigin.Y) * MetersPerPixel;
+
+                    Program.Client.Server_MoveSceneModel(selectedModel.Id, new Vector3(selectedModel.PosX, selectedModel.PosY, selectedModel.PosZ));
+                    pnlScene.Refresh();
+                }
+            }
         }
     }
 }

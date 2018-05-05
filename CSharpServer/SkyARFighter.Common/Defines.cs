@@ -15,7 +15,13 @@ namespace SkyARFighter.Common
         [RemotingDirection(RemotingDirection.Both)]
         SyncCamera = 0x03,
         [RemotingDirection(RemotingDirection.Both)]
-        CreateSceneModel = 0x04
+        CreateSceneModel = 0x10,
+        [RemotingDirection(RemotingDirection.Both)]
+        MoveSceneModel = 0x11,
+        [RemotingDirection(RemotingDirection.Both)]
+        ScaleSceneModel = 0x12,
+        [RemotingDirection(RemotingDirection.Both)]
+        RotateSceneModel = 0x13,
     }
 
     public enum SceneModelType

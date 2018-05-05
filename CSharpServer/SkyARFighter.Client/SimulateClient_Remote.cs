@@ -1,4 +1,5 @@
 ﻿using SkyARFighter.Common;
+using SkyARFighter.Common.DataInfos;
 
 namespace SkyARFighter.Client
 {
@@ -14,9 +15,24 @@ namespace SkyARFighter.Client
             InvokeRemoteMethod(RemotingMethodId.SyncCamera, new object[] { cameraTransform });
         }
 
-        public void Server_CreateObject(SceneModelType type, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void Server_CreateSceneModel(SceneModelInfo info)
         {
-            InvokeRemoteMethod(RemotingMethodId.CreateSceneModel, new object[] { type, pos, scale, rotate });
+            InvokeRemoteMethod(RemotingMethodId.CreateSceneModel, new object[] { info });
+        }
+
+        public void Server_MoveSceneModel(long modelId, Vector3 pos)
+        {
+            InvokeRemoteMethod(RemotingMethodId.MoveSceneModel, new object[] { modelId, pos });
+        }
+
+        public void Server_RotateSceneModel(long modelId, Vector3 rotation)
+        {
+            InvokeRemoteMethod(RemotingMethodId.RotateSceneModel, new object[] { modelId, rotation });
+        }
+
+        public void Server_ScaleSceneModel(long modelId, Vector3 scale)
+        {
+            InvokeRemoteMethod(RemotingMethodId.ScaleSceneModel, new object[] { modelId, scale });
         }
     }
 }

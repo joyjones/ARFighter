@@ -125,12 +125,19 @@ namespace SkyARFighter.Server.Structures
         {
             var player = new Player(peer);
             player.Client_Welcome(player.Id);
+            players[player.Id] = player;
             return player;
         }
 
         public Scene RequirePlayerScene(Player player, string identityName)
         {
-            return scenes.Values.Where(s => s.StartupName == identityName).FirstOrDefault();
+            var scene = scenes.Values.Where(s => s.StartupName == identityName).FirstOrDefault();
+            if (scene != null)
+            {
+                scene.AddPlayer(player);
+                players.Remove(player.Id);
+            }
+            return scene;
         }
 
         public Marker GetMarker(long id)

@@ -20,12 +20,6 @@ namespace SkyARFighter.Server.Structures
         {
             Peer = peer;
             Peer.HostPlayer = this;
-            Id = CommonMethods.Rander.Next();
-        }
-
-        public long Id
-        {
-            get; private set;
         }
 
         public PlayerPeer Peer
@@ -33,7 +27,11 @@ namespace SkyARFighter.Server.Structures
             get; private set;
         }
 
-        private Scene curScene = null;
+        public Scene CurScene
+        {
+            get; set;
+        }
+
         private Matrix cameraTransform = new Matrix();
     }
 }

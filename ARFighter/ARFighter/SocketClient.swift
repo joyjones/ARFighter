@@ -51,15 +51,22 @@ class SocketClient {
     
     private func beginReadMessage() {
         while isConnected {
-            if var bytes = client!.read(1024, timeout: 1) {
-                let data = Data(bytes: bytes)
-                let methodId = RemotingMethodId(rawValue: data.withUnsafeBytes { $0.pointee })!
+            if var bytes = client!.read(4096, timeout: 1) {
+                let dd = Data(bytes: bytes)
+                let methodId = RemotingMethodId(rawValue: dd.withUnsafeBytes { $0.pointee })!
                 bytes.removeSubrange(0...3)
-                let json = String(bytes: bytes, encoding: .utf8)!
-                let args = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
-                
-                print("+++ invoking local method: \(methodId), args: \(json)")
-                delegateMethods?.invokeMethod(methodId: methodId, args: args!)
+                let length: Int32 = Data(bytes: bytes).withUnsafeBytes { $0.pointee }
+                if length > 0 {
+                    bytes.removeSubrange(0...3)
+                    if bytes.count > length {
+                        bytes.removeSubrange(Int(length)...(bytes.count - 1))
+                    }
+                    let json = String(bytes: bytes, encoding: .utf8)!
+                    let args = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
+                    
+                    print("+++ invoking local method: \(methodId), args: \(json)")
+                    delegateMethods?.invokeMethod(methodId: methodId, args: args!)
+                }
             }
         }
     }
@@ -69,7 +76,11 @@ class SocketClient {
         let context = String(data: data!, encoding: .utf8)!
         var type = Int32(cmd.rawValue)
         var bytes = [UInt8](Data(buffer: UnsafeBufferPointer(start: &type, count: 1)))
-        bytes.append(contentsOf: Array(context.utf8))
+        let bytesCtx = Array(context.utf8)
+        var len = Int32(bytesCtx.count)
+        let bytesLen = [UInt8](Data(buffer: UnsafeBufferPointer(start: &len, count: 1)))
+        bytes.append(contentsOf: bytesLen)
+        bytes.append(contentsOf: bytesCtx)
         
         if cmd != RemotingMethodId.SyncCamera {
             print("+++ invoking remote method: \(cmd), args: \(context)")

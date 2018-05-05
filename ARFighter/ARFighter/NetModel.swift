@@ -22,19 +22,6 @@ class GameObject {
     }
 }
 
-extension float4 {
-    func toString() -> String {
-        return "\(x),\(y),\(z),\(w)"
-    }
-    static func fromString(str: String) -> float4 {
-        let ss = str.split(separator: ",")
-        return float4([(ss[0] as NSString).floatValue,
-                       (ss[1] as NSString).floatValue,
-                       (ss[2] as NSString).floatValue,
-                       (ss[3] as NSString).floatValue])
-    }
-}
-
 extension matrix_float4x4{
     func toJson() -> [String: [Float]]{
         return [
@@ -91,8 +78,8 @@ extension matrix_float4x4{
 }
 
 extension simd_float3 {
-    static func fromJson(json: [String: Float]) -> simd_float3 {
-        return simd_float3(Float(json["x"]!), Float(json["y"]!), Float(json["z"]!))
+    static func fromJson(json: [String: Any]) -> simd_float3 {
+        return simd_float3(Float(json["x"] as! Double), Float(json["y"] as! Double), Float(json["z"] as! Double))
     }
     func toJson() -> [String: Float] {
         return ["x": x, "y": y, "z": z]
@@ -100,14 +87,14 @@ extension simd_float3 {
 }
 
 extension simd_float4 {
-    static func fromJson(json: [String: Float]) -> simd_float4 {
-        return simd_float4(Float(json["z"]!), Float(json["y"]!), Float(json["z"]!), Float(json["w"]!))
+    static func fromJson(json: [String: Any]) -> simd_float4 {
+        return simd_float4(Float(json["z"] as! Double), Float(json["y"] as! Double), Float(json["z"] as! Double), Float(json["w"] as! Double))
     }
     func toJson() -> [String: Float] {
         return ["x": x, "y": y, "z": z, "w": w]
     }
 }
-//
+
 //struct NMMatrix: Mappable {
 //    var values: [Float] = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
 //

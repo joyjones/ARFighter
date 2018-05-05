@@ -39,11 +39,11 @@
             this.tsslConnectState = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlScene = new System.Windows.Forms.Panel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbnSetupWorld = new System.Windows.Forms.ToolStripButton();
             this.tsbnCreateModel = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsbnCreateModel_Box = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbnSetupWorld = new System.Windows.Forms.ToolStripButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.statusStrip1.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -135,7 +135,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.panel1);
+            this.tabPage1.Controls.Add(this.pnlScene);
             this.tabPage1.Controls.Add(this.toolStrip1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -145,13 +145,17 @@
             this.tabPage1.Text = "场景";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // panel1
+            // pnlScene
             // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 28);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(438, 265);
-            this.panel1.TabIndex = 1;
+            this.pnlScene.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlScene.Location = new System.Drawing.Point(3, 28);
+            this.pnlScene.Name = "pnlScene";
+            this.pnlScene.Size = new System.Drawing.Size(438, 265);
+            this.pnlScene.TabIndex = 1;
+            this.pnlScene.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlScene_Paint);
+            this.pnlScene.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlScene_MouseDown);
+            this.pnlScene.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlScene_MouseMove);
+            this.pnlScene.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlScene_MouseUp);
             // 
             // toolStrip1
             // 
@@ -163,6 +167,15 @@
             this.toolStrip1.Size = new System.Drawing.Size(438, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // tsbnSetupWorld
+            // 
+            this.tsbnSetupWorld.Image = ((System.Drawing.Image)(resources.GetObject("tsbnSetupWorld.Image")));
+            this.tsbnSetupWorld.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbnSetupWorld.Name = "tsbnSetupWorld";
+            this.tsbnSetupWorld.Size = new System.Drawing.Size(76, 22);
+            this.tsbnSetupWorld.Text = "启动场景";
+            this.tsbnSetupWorld.Click += new System.EventHandler(this.tsbnSetupWorld_Click);
             // 
             // tsbnCreateModel
             // 
@@ -178,18 +191,9 @@
             // tsbnCreateModel_Box
             // 
             this.tsbnCreateModel_Box.Name = "tsbnCreateModel_Box";
-            this.tsbnCreateModel_Box.Size = new System.Drawing.Size(180, 22);
+            this.tsbnCreateModel_Box.Size = new System.Drawing.Size(98, 22);
             this.tsbnCreateModel_Box.Text = "Box";
             this.tsbnCreateModel_Box.Click += new System.EventHandler(this.tsMenuItemCreateBox_Click);
-            // 
-            // tsbnSetupWorld
-            // 
-            this.tsbnSetupWorld.Image = ((System.Drawing.Image)(resources.GetObject("tsbnSetupWorld.Image")));
-            this.tsbnSetupWorld.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbnSetupWorld.Name = "tsbnSetupWorld";
-            this.tsbnSetupWorld.Size = new System.Drawing.Size(76, 22);
-            this.tsbnSetupWorld.Text = "启动场景";
-            this.tsbnSetupWorld.Click += new System.EventHandler(this.tsbnSetupWorld_Click);
             // 
             // tabPage2
             // 
@@ -243,7 +247,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslConnectState;
         private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlScene;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton tsbnSetupWorld;
         private System.Windows.Forms.TabPage tabPage2;

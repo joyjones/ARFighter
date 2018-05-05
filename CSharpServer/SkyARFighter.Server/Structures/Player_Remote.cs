@@ -16,9 +16,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.Welcome, new object[] { playerId });
         }
 
-        public void Client_SetupWorld(string identityName, SceneModelInfo[] models)
+        public void Client_SetupWorld(string identityName, SceneInfo sceneInfo, SceneModelInfo[] models)
         {
-            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName, models });
+            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName, sceneInfo, models });
         }
 
         public void Client_SyncCamera(Matrix mat)
@@ -26,9 +26,24 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
         }
 
-        public void Client_CreateSceneModel(long playerId, long typeId, Vector3 pos, Vector3 scale, Vector4 rotate)
+        public void Client_CreateSceneModel(SceneModelInfo info)
         {
-            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { playerId, typeId, pos, scale, rotate });
+            Peer.SendMessage(RemotingMethodId.CreateSceneModel, new object[] { info });
+        }
+
+        public void Client_MoveSceneModel(long playerId, long modelId, Vector3 pos)
+        {
+            Peer.SendMessage(RemotingMethodId.MoveSceneModel, new object[] { playerId, modelId, pos });
+        }
+
+        public void Client_RotateSceneModel(long playerId, long modelId, Vector3 rotation)
+        {
+            Peer.SendMessage(RemotingMethodId.RotateSceneModel, new object[] { playerId, modelId, rotation });
+        }
+
+        public void Client_ScaleSceneModel(long playerId, long modelId, Vector3 scale)
+        {
+            Peer.SendMessage(RemotingMethodId.ScaleSceneModel, new object[] { playerId, modelId, scale });
         }
     }
 }

@@ -24,6 +24,7 @@ namespace SkyARFighter.Server.Structures
         public GameObject(T info)
         {
             Info = info;
+            Id = Info.Id;
         }
         public T Info
         {
