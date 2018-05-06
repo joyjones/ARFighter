@@ -46,7 +46,7 @@ class MainPlayer: Player {
         smi.model_id = templateId
         smi.pos = pos
         smi.rotation = simd_float3(0)
-        smi.scale = simd_float3(0.05)
+        smi.scale = simd_float3(templateId == 3 ? 0.0005 : 0.05)
         if let model = parentScene?.addModel(info: smi) {
             server_createSceneModel(model: model)
         }

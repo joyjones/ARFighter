@@ -94,13 +94,15 @@ class SceneModel: GameObject {
     func initGeometry() {
         switch modelId {
         case 1:
-            geometry = SCNSphere(radius: 1)
+            sceneNode = SCNNode(geometry: SCNSphere(radius: 1))
         case 2:
-            geometry = SCNCylinder(radius: 0.5, height: 1)
+            sceneNode = SCNNode(geometry: SCNCylinder(radius: 0.5, height: 1))
+        case 3:
+            sceneNode = Character(model: self, ModelFile: "art.scnassets/idle.dae")
         default:
             return
         }
-        sceneNode = SCNNode(geometry: geometry)
+        
         parentScene.rootNode.addChildNode(sceneNode!)
     }
     
@@ -112,10 +114,15 @@ class SceneModel: GameObject {
         parentScene.rootNode.addChildNode(sceneNode!)
     }
     
+    func tick() {
+        if let ch = sceneNode as? Character {
+            ch.update(updateAtTime: 0.025, camera: parentScene.session?.currentFrame?.camera)
+        }
+    }
+    
     let modelId: Int64
     let parentScene: GameScene
     let authorPlayerId: Int64?
-    var geometry: SCNGeometry?
     var sceneNode: SCNNode?
     
     var position: simd_float3 {
@@ -147,10 +154,10 @@ class SceneModel: GameObject {
             if _state != newValue {
                 _state = newValue
                 if _state == .Normal {
-                    geometry?.firstMaterial?.diffuse.contents = UIColor.white
+                    sceneNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.white
                 }
                 else if _state == .Selected {
-                    geometry?.firstMaterial?.diffuse.contents = UIColor.orange
+                    sceneNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
                 }
             }
         }

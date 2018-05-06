@@ -16,6 +16,7 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
     @IBOutlet weak var btnConnectServer: UIButton!
     @IBOutlet weak var btnChangeMode: UIButton!
     @IBOutlet weak var lblPlayerState: UILabel!
+    @IBOutlet weak var btnModelKind: UIButton!
     
     var parentView: ViewController {
         return parent as! ViewController
@@ -44,6 +45,19 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
         ]
         btnChangeMode.setTitle("模式: " + textMap[mode!]!, for: [])
         parentView.gameScene.optMode = mode!
+    }
+    
+    @IBAction func onChangeModelKind(_ sender: UIButton) {
+        var mode = ModelCreateKind(rawValue: parentView.gameScene.modelCreateKind.rawValue + 1)
+        if mode == nil {
+            mode = ModelCreateKind.Sphere
+        }
+        let textMap: [ModelCreateKind: String] = [
+            ModelCreateKind.Sphere: "圆点",
+            ModelCreateKind.Character: "角色",
+            ]
+        btnModelKind.setTitle("模式: " + textMap[mode!]!, for: [])
+        parentView.gameScene.modelCreateKind = mode!
     }
     
     func appendLog(msg: String) {

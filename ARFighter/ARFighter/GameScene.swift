@@ -44,7 +44,7 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     private func initialize(){
         mainPlayer = MainPlayer(scene: self)
         SocketClient.instance.delegateMethods = self
-        triggerNetwork()
+//        triggerNetwork()
         connectServer()
         enableTimer(enabled: true)
     }
@@ -81,6 +81,9 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     
     @objc func tick() {
         mainPlayer!.tick(spanTime: tickInterval)
+        for m in models.values {
+            m.tick()
+        }
     }
     
     func findModel(node: SCNNode?) -> SceneModel? {
@@ -185,6 +188,7 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     var startupName: String?
     var session: ARSession?
     var optMode: OperationMode = .Create
+    var modelCreateKind: ModelCreateKind = .Sphere
     private var _selectedModel: SceneModel? = nil
     var selectedModel: SceneModel? {
         get { return _selectedModel }
@@ -198,10 +202,18 @@ class GameScene: SCNScene, RemotingMethodDelegate {
             }
         }
     }
-    let tickInterval = 0.1
+    let tickInterval = 0.04
     var timer: Timer?
     var mainPlayer: MainPlayer?
     var players = [Int64: Player]()
     var models = [Int64: SceneModel]()
     var delegateMsg: MessageViewDelegate?
+    var controllingCharacter: Character? {
+        for m in models.values {
+            if m.authorPlayerId == mainPlayer!.id && m.sceneNode is Character {
+                return (m.sceneNode as! Character)
+            }
+        }
+        return nil
+    }
 }

@@ -110,7 +110,8 @@ namespace SkyARFighter.Server.Structures
                             try
                             {
                                 var args = JsonHelper.ParseMethodParameters(method, json);
-                                peer.Log($"调用远程方法：{method.Name}, 参数：{json}");
+                                if (method.Name != "SyncPlayerState")
+                                    peer.Log($"调用远程方法：{method.Name}, 参数：{json}");
                                 if (method.DeclaringType == typeof(PlayerPeer))
                                     method.Invoke(peer, args);
                                 else if (peer.HostPlayer != null)

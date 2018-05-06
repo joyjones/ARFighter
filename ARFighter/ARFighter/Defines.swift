@@ -45,6 +45,11 @@ enum OperationMode: Int32 {
     case Scale
 }
 
+enum ModelCreateKind: Int32 {
+    case Sphere
+    case Character
+}
+
 class GameObject {
     
     var id: Int64 = generateAutoId()
