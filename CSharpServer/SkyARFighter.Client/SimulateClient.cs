@@ -87,7 +87,7 @@ namespace SkyARFighter.Client
             }
             State = States.Connected;
             
-            ReceiveMessage();
+            ReceiveMessage_v3();
 
             if (UniqueDeviceId != null)
                 Server_Login(UniqueDeviceId);
@@ -103,61 +103,69 @@ namespace SkyARFighter.Client
                 socket.Disconnect(false);
                 socket.Close();
                 State = States.Offline;
+
+                Disconnected?.Invoke();
             }
         }
-        
-        private void ReceiveMessage()
+
+        private void ReceiveMessage_v3()
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
             {
                 Thread.CurrentThread.Name = "客户端通信处理线程";
-                var buffer = new byte[40960];
+
+                var buffer = new byte[1024];
                 while (socket.Connected)
                 {
-                    waitingNextMessage.Reset();
-
-                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ar =>
+                    socket.ReceiveTimeout = 1000;
+                    try
                     {
-                        try
-                        {
-                            if (socket.EndReceive(ar) == 0)
-                                throw new Exception();
-                        }
-                        catch
-                        {
-                            LogAppended?.Invoke("断开连接");
-                            Disconnected?.Invoke();
-                            return;
-                        }
+                        if (socket.Receive(buffer, 0, 8, SocketFlags.None) == 0)
+                            continue;
+                    }
+                    catch (SocketException ex)
+                    {
+                        if (ex.SocketErrorCode == SocketError.TimedOut)
+                            continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogAppended?.Invoke("断开连接");
+                        Disconnected?.Invoke();
+                        return;
+                    }
 
-                        var msgType = (RemotingMethodId)BitConverter.ToInt32(buffer, 0);
-                        int length = BitConverter.ToInt32(buffer, 4);
-                        if (length > 0)
+                    var msgType = BitConverter.ToInt32(buffer, 0);
+                    int contentLen = BitConverter.ToInt32(buffer, 4);
+                    if (contentLen > 0)
+                    {
+                        if (!MsgHandlers.TryGetValue((RemotingMethodId)msgType, out MethodInfo mi))
+                            LogAppended?.Invoke("收到未注册的的远程方法调用请求：" + (RemotingMethodId)msgType);
+                        else
                         {
-                            if (!MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
-                                LogAppended?.Invoke("收到未注册的的远程方法调用请求：" + msgType);
-                            else
+                            try
                             {
-                                try
+                                List<byte> bytes = new List<byte>();
+                                int dataLen = 0, restLen = contentLen;
+                                while (restLen > 0)
                                 {
-                                    var context = buffer.Skip(8).Take(length).ToArray();
-                                    var str = Encoding.UTF8.GetString(context, 0, context.Length);
-                                    var args = JsonHelper.ParseMethodParameters(mi, str);
-                                    LogAppended?.Invoke($"调用本地方法：{mi.Name}, 参数：{str}");
+                                    int len = socket.Receive(buffer, 0, restLen > buffer.Length ? buffer.Length : restLen, SocketFlags.None);
+                                    bytes.AddRange(buffer.Take(len));
+                                    dataLen += len;
+                                    restLen -= len;
+                                }
+                                var str = Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Count);
+                                var args = JsonHelper.ParseMethodParameters(mi, str);
+                                LogAppended?.Invoke($"调用本地方法：{mi.Name}, 参数：{str}");
 
-                                    mi.Invoke(this, args);
-                                }
-                                catch (Exception ex)
-                                {
-                                    LogAppended?.Invoke("远程方法调用异常：" + ex.Message);
-                                }
+                                mi.Invoke(this, args);
+                            }
+                            catch (Exception ex)
+                            {
+                                LogAppended?.Invoke("远程方法调用异常：" + ex.Message);
                             }
                         }
-
-                        waitingNextMessage.Set();
-                    }), null);
-
-                    while (socket.Connected && !waitingNextMessage.WaitOne(50)) ;
+                    }
                 }
             }));
         }
@@ -184,10 +192,12 @@ namespace SkyARFighter.Client
         public void Tick(object sender, ElapsedEventArgs e)
         {
             var ts = new TimeSpan(e.SignalTime.Ticks - lastElapsedTick);
-            if (ts.TotalMilliseconds >= 100)
+            if (ts.TotalMilliseconds >= 10 * 1000)
             {
-                timer.Enabled = false;
-                //Server_SyncPlayerState();
+                if (Info != null)
+                {
+                    Server_SyncPlayerState();
+                }
                 lastElapsedTick = e.SignalTime.Ticks;
             }
         }

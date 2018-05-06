@@ -90,13 +90,13 @@ namespace SkyARFighter.Server
             }));
         }
 
-        private void Peer_LogAppended(PlayerPeer peer, string arg2)
+        private void Peer_LogAppended(PlayerPeer peer, string msg)
         {
             if (peer != SelectedPeer)
                 return;
             BeginInvoke(new Action(() =>
             {
-                txbClientMsgs.Text = string.Join("\r\n", peer.Logs);
+                txbClientMsgs.Text += msg + "\r\n";
             }));
         }
 
@@ -149,6 +149,12 @@ namespace SkyARFighter.Server
                 timerTick.Enabled = true;
                 bnStart.Text = "停止";
             }
+        }
+
+        private void tsmiClearPeerLogs_Click(object sender, EventArgs e)
+        {
+            selectedPeer.ClearLogs();
+            txbClientMsgs.Text = "";
         }
     }
 }

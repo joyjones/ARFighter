@@ -10,29 +10,29 @@ import SceneKit
 class SceneModelInfo {
     var id: Int64 = GameObject.generateAutoId()
     var scene_id: Int64?
-    var model_id: Int64?
+    var model_id: Int64? = 1
     var create_player_id: Int64?
     var description: String?
-    var pos_x: Float?
-    var pos_y: Float?
-    var pos_z: Float?
-    var scale_x: Float?
-    var scale_y: Float?
-    var scale_z: Float?
-    var rotation_x: Float?
-    var rotation_y: Float?
-    var rotation_z: Float?
+    var pos_x: Float = 0
+    var pos_y: Float = 0
+    var pos_z: Float = 0
+    var scale_x: Float = 1
+    var scale_y: Float = 1
+    var scale_z: Float = 1
+    var rotation_x: Float = 0
+    var rotation_y: Float = 0
+    var rotation_z: Float = 0
     
     var pos: simd_float3 {
-        get { return simd_float3(pos_x!, pos_y!, pos_z!) }
+        get { return simd_float3(pos_x, pos_y, pos_z) }
         set { pos_x = newValue.x; pos_y = newValue.y; pos_z = newValue.z }
     }
     var scale: simd_float3 {
-        get { return simd_float3(scale_x!, scale_y!, scale_z!) }
+        get { return simd_float3(scale_x, scale_y, scale_z) }
         set { scale_x = newValue.x; scale_y = newValue.y; scale_z = newValue.z }
     }
     var rotation: simd_float3 {
-        get { return simd_float3(rotation_x!, rotation_y!, rotation_z!) }
+        get { return simd_float3(rotation_x, rotation_y, rotation_z) }
         set { rotation_x = newValue.x; rotation_y = newValue.y; rotation_z = newValue.z }
     }
     static func fromJson(json: [String: Any]) -> SceneModelInfo {
@@ -68,7 +68,8 @@ class SceneModel: GameObject {
         case 音效 = 20
         case 特效
         case 按钮触发器
-        case 角色 = 100
+        case 玩家 = 100
+        case 角色
     }
     
     enum State: Int32 {
@@ -81,15 +82,26 @@ class SceneModel: GameObject {
         self.parentScene = scene
         self.authorPlayerId = info.create_player_id
         
-        geometry = SCNSphere(radius: 1)
-        sceneNode = SCNNode(geometry: geometry)
-        self.parentScene.rootNode.addChildNode(sceneNode!)
-        
         super.init()
+        
+        initGeometry()
         id = info.id
         position = info.pos
         scale = info.scale
         rotation = info.rotation
+    }
+    
+    func initGeometry() {
+        switch modelId {
+        case 1:
+            geometry = SCNSphere(radius: 1)
+        case 2:
+            geometry = SCNCylinder(radius: 0.5, height: 1)
+        default:
+            return
+        }
+        sceneNode = SCNNode(geometry: geometry)
+        parentScene.rootNode.addChildNode(sceneNode!)
     }
     
     func detach() {
@@ -142,6 +154,10 @@ class SceneModel: GameObject {
                 }
             }
         }
+    }
+    var visible: Bool {
+        get { return sceneNode != nil && !sceneNode!.isHidden }
+        set { sceneNode?.isHidden = !newValue }
     }
     
     func toJson() -> [String: Any] {

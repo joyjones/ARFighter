@@ -36,10 +36,22 @@ class Player: GameObject {
     func initPlayer(info: PlayerInfo) {
         self.info = info
         id = info.id
+        
+        let info = SceneModelInfo()
+        info.model_id = 2
+        info.scale_x = 0.05
+        info.scale_y = 0.05
+        info.scale_z = 0.05
+        cameraModel = SceneModel(info: info, scene: parentScene!)
     }
     
-    func syncCamera(mat: matrix_float4x4) {
-        cameraTransform = mat
+    func setCameraPose(pos: simd_float3, rotation: simd_float3) {
+        cameraTransform.columns.3.x = pos.x
+        cameraTransform.columns.3.y = pos.y
+        cameraTransform.columns.3.z = pos.z
+        if cameraModel != nil {
+            cameraModel?.position = cameraPos
+        }
     }
     
     func tick(spanTime: Double) {
@@ -49,4 +61,13 @@ class Player: GameObject {
     var info: PlayerInfo?
     var parentScene: GameScene?
     var cameraTransform = matrix_float4x4()
+    var cameraModel: SceneModel?
+    var cameraPos: simd_float3 {
+        get { return simd_float3(cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z) }
+        set {
+            cameraTransform.columns.3.x = newValue.x
+            cameraTransform.columns.3.x = newValue.y
+            cameraTransform.columns.3.x = newValue.z
+        }
+    }
 }

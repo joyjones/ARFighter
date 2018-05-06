@@ -19,6 +19,7 @@ namespace SkyARFighter.Client
         {
             playerInfo = info;
             playerInfo.AccessToken = accessToken;
+            SceneContentChanged?.Invoke();
         }
 
         [RemotingMethod(RemotingMethodId.SetupWorld)]
@@ -33,16 +34,21 @@ namespace SkyARFighter.Client
         [RemotingMethod(RemotingMethodId.AddPlayer)]
         public void AddPlayer(PlayerInfo info)
         {
+            Scene.AddPlayer(info);
+            SceneContentChanged?.Invoke();
         }
 
         [RemotingMethod(RemotingMethodId.RemovePlayer)]
         public void RemovePlayer(long playerId)
         {
+            Scene.RemovePlayer(playerId);
+            SceneContentChanged?.Invoke();
         }
 
         [RemotingMethod(RemotingMethodId.SyncPlayerState)]
         public void SyncPlayerState(long playerId, Vector3 camPos, Vector3 camRotation)
         {
+            SceneContentChanged?.Invoke();
         }
 
         [RemotingMethod(RemotingMethodId.SendMessage)]

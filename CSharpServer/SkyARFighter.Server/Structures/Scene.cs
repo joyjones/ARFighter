@@ -49,10 +49,24 @@ namespace SkyARFighter.Server.Structures
                 player.CurScene.RemovePlayer(player);
             player.CurScene = this;
             players[player.Id] = player;
+
+            foreach (var plr in players.Values.ToArray())
+            {
+                if (plr.Id == player.Id)
+                    continue;
+                plr.Client_AddPlayer(player.Info);
+            }
         }
         public void RemovePlayer(Player player)
         {
             players.Remove(player.Id);
+
+            foreach (var plr in players.Values.ToArray())
+            {
+                if (plr.Id == player.Id)
+                    continue;
+                plr.Client_RemovePlayer(player.Id);
+            }
         }
         public SceneModel GetModel(long id)
         {

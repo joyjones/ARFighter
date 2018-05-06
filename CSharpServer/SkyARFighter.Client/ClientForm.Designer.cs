@@ -46,6 +46,7 @@
             this.tsbnCreateModel_Box = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.bnResetDeviceList = new System.Windows.Forms.Button();
+            this.tsslScenePlayers = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -111,7 +112,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsslConnectState});
+            this.tsslConnectState,
+            this.tsslScenePlayers});
             this.statusStrip1.Location = new System.Drawing.Point(0, 393);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(476, 22);
@@ -221,6 +223,12 @@
             this.bnResetDeviceList.UseVisualStyleBackColor = true;
             this.bnResetDeviceList.Click += new System.EventHandler(this.bnResetDeviceList_Click);
             // 
+            // tsslScenePlayers
+            // 
+            this.tsslScenePlayers.Name = "tsslScenePlayers";
+            this.tsslScenePlayers.Size = new System.Drawing.Size(100, 17);
+            this.tsslScenePlayers.Text = "场景玩家: NONE";
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -271,6 +279,7 @@
         private System.Windows.Forms.ToolStripDropDownButton tsbnCreateModel;
         private System.Windows.Forms.ToolStripMenuItem tsbnCreateModel_Box;
         private System.Windows.Forms.Button bnResetDeviceList;
+        private System.Windows.Forms.ToolStripStatusLabel tsslScenePlayers;
     }
 }
 

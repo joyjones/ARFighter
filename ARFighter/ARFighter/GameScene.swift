@@ -54,10 +54,12 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     }
     
     func connectServer() {
-        SocketClient.instance.connectServer(address: "192.168.31.219", port: 8333)
-        //        SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
+        updateQueue.async {
+            SocketClient.instance.connectServer(address: "192.168.31.219", port: 8333)
+            //        SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
+        }
     }
-
+    
     func triggerNetwork() {
         func onSuccess(_ result: String) {
         }
@@ -108,9 +110,6 @@ class GameScene: SCNScene, RemotingMethodDelegate {
                 models[info.id] = SceneModel(info: info, scene: self)
             }
             mainPlayer!.state = .ScenePlaying
-        case .SyncCamera:
-            let pid = args[0] as! Int64
-            players[pid]?.cameraTransform = matrix_float4x4.fromJson(json: args[1] as! [String: [Float]])
         case .SendMessage:
             SocketClient.instance.delegateMsg?.alert(msg: args[1] as! String)
         case .CreateSceneModel:
@@ -124,9 +123,31 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         case .RotateSceneModel:
             transformModel(playerId: args[0] as! Int64, modelId: args[1] as! Int64,
                            pos: nil, scale: nil, rotation: simd_float3.fromJson(json: args[2] as! [String: Any]))
+        case .DeleteSceneModel:
+            _ = removeModel(playerId: args[0] as! Int64, modelId: args[1] as! Int64)
+        case .AddPlayer:
+            addPlayer(info: PlayerInfo.fromJson(json: args[0] as! [String: Any]))
+        case .RemovePlayer:
+            removePlayer(playerId: args[0] as! Int64)
+        case .SyncPlayerState:
+            let pid = args[0] as! Int64
+            players[pid]?.setCameraPose(
+                pos: simd_float3.fromJson(json: args[1] as! [String: Any]),
+                rotation: simd_float3.fromJson( json: args[2] as! [String: Any])
+            )
         default:
             break
         }
+    }
+    
+    func addPlayer(info: PlayerInfo) {
+        let player = Player(scene: self)
+        player.initPlayer(info: info)
+        players[player.id] = player
+    }
+    
+    func removePlayer(playerId: Int64) {
+        players.removeValue(forKey: playerId)
     }
     
     func addModel(info: SceneModelInfo) -> SceneModel {
@@ -158,6 +179,8 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         return models.removeValue(forKey: modelId) != nil
     }
     
+    
+    let updateQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".MainSceneQueue")
     var info: SceneInfo?
     var startupName: String?
     var session: ARSession?

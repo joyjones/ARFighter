@@ -80,7 +80,7 @@ class SocketClient {
         bytes.append(contentsOf: bytesLen)
         bytes.append(contentsOf: bytesCtx)
         
-        if cmd != RemotingMethodId.SyncCamera {
+        if cmd != RemotingMethodId.SyncPlayerState {
             print("+++ invoking remote method: \(cmd), args: \(context)")
         }
         _ = client?.send(data: bytes)

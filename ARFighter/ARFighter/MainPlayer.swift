@@ -17,7 +17,7 @@ class MainPlayer: Player {
     override func initPlayer(info: PlayerInfo) {
         super.initPlayer(info: info)
         state = .SearchOrigin
-        
+        cameraModel?.visible = false
         // for test
 //        server_requireScene(identityName: "test02")
     }
@@ -77,11 +77,20 @@ class MainPlayer: Player {
     override func tick(spanTime: Double) {
         _elapsedTime += spanTime
         if state == .ScenePlaying {
-            if parentScene!.session!.currentFrame != nil {
+            if parentScene!.session!.currentFrame != nil && _elapsedTime - _lastSyncCameraTick > 0 {
                 cameraTransform = parentScene!.session!.currentFrame!.camera.transform
+                let newPos = cameraPos
+                if _prevCameraPos == nil || _prevCameraPos!.x != newPos.x || _prevCameraPos!.y != newPos.y || _prevCameraPos!.z != newPos.z {
+                    _prevCameraPos = newPos
+                    server_syncPlayerState()
+                    _lastSyncCameraTick = _elapsedTime
+                }
                 
-//                server_syncCamera(mat: cameraTransform)
+//                parentScene!.session!.currentFrame!.camera.eulerAngles
+//                let g = GLKMatrix4MakeWithQuaternion()
             }
+//            // for test
+//            cameraModel?.position = cameraPos
         }
         else if state == .SceneLoading {
             if _elapsedTime > 5 {
@@ -94,8 +103,9 @@ class MainPlayer: Player {
         SocketClient.instance.sendMessage(cmd: .SetupWorld, context: [identityName])
     }
     
-    func server_syncCamera(mat: matrix_float4x4) {
-        SocketClient.instance.sendMessage(cmd: .SyncCamera, context: [mat.toJson()])
+    func server_syncPlayerState() {
+        let rot = simd_float3(0, 0, 0)
+        SocketClient.instance.sendMessage(cmd: .SyncPlayerState, context: [cameraPos.toJson(), rot.toJson()])
     }
     
     func server_createSceneModel(model: SceneModel){
@@ -104,6 +114,8 @@ class MainPlayer: Player {
     
     private var _state: PlayerState = .Initial
     private var _elapsedTime: Double = 0
+    private var _lastSyncCameraTick: Double = 0
+    private var _prevCameraPos: simd_float3?
     var state: PlayerState {
         get { return _state }
         set {

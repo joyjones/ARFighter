@@ -12,13 +12,15 @@ enum RemotingMethodId: Int32 {
     case Login = 0x01
     case Welcome
     case SetupWorld
-    case SyncCamera
     case SendMessage
     case CreateSceneModel = 0x10
     case MoveSceneModel
     case ScaleSceneModel
     case RotateSceneModel
     case DeleteSceneModel
+    case AddPlayer = 0x20
+    case RemovePlayer
+    case SyncPlayerState
 }
 
 enum PlayerState {

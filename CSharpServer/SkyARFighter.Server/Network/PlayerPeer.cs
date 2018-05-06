@@ -130,10 +130,11 @@ namespace SkyARFighter.Server.Network
                 sw.Write(bsLen, 0, bsLen.Length);
                 sw.Write(bsCtx, 0, bsCtx.Length);
                 var bsSend = sw.GetBuffer();
-                //System.Diagnostics.Debug.Assert(bsSend.Length == bsType.Length + bsLen.Length + bsCtx.Length);
+                int lenReal = bsType.Length + bsLen.Length + bsCtx.Length;
+                if (lenReal < bsSend.Length)
+                    bsSend = bsSend.Take(lenReal).ToArray();
                 socket.Send(bsSend);
 
-                int lenReal = bsType.Length + bsLen.Length + bsCtx.Length;
                 LogAppended?.Invoke(this, $"调用客户端方法：{methodId}, 字节数: {lenReal}/{bsSend.Length}");//, 参数：{json}");
             }
             return true;
@@ -141,6 +142,10 @@ namespace SkyARFighter.Server.Network
         public void Log(string msg)
         {
             LogAppended?.Invoke(this, msg);
+        }
+        public void ClearLogs()
+        {
+            logs.Clear();
         }
         public override string ToString()
         {

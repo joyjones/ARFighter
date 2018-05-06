@@ -41,11 +41,14 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslClientCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerTick = new System.Windows.Forms.Timer(this.components);
+            this.ctxMenuPeerLogs = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClearPeerLogs = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.ctxMenuPeerLogs.SuspendLayout();
             this.SuspendLayout();
             // 
             // lsvClients
@@ -65,6 +68,7 @@
             // 
             // txbClientMsgs
             // 
+            this.txbClientMsgs.ContextMenuStrip = this.ctxMenuPeerLogs;
             this.txbClientMsgs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txbClientMsgs.Location = new System.Drawing.Point(0, 0);
             this.txbClientMsgs.Multiline = true;
@@ -171,6 +175,20 @@
             this.timerTick.Interval = 500;
             this.timerTick.Tick += new System.EventHandler(this.timerTick_Tick);
             // 
+            // ctxMenuPeerLogs
+            // 
+            this.ctxMenuPeerLogs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearPeerLogs});
+            this.ctxMenuPeerLogs.Name = "ctxMenuPeerLogs";
+            this.ctxMenuPeerLogs.Size = new System.Drawing.Size(181, 48);
+            // 
+            // tsmiClearPeerLogs
+            // 
+            this.tsmiClearPeerLogs.Name = "tsmiClearPeerLogs";
+            this.tsmiClearPeerLogs.Size = new System.Drawing.Size(180, 22);
+            this.tsmiClearPeerLogs.Text = "清空日志";
+            this.tsmiClearPeerLogs.Click += new System.EventHandler(this.tsmiClearPeerLogs_Click);
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -191,6 +209,7 @@
             this.panel1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.ctxMenuPeerLogs.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -210,6 +229,8 @@
         private System.Windows.Forms.Button bnStart;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Timer timerTick;
+        private System.Windows.Forms.ContextMenuStrip ctxMenuPeerLogs;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearPeerLogs;
     }
 }
 

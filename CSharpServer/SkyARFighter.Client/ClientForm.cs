@@ -25,22 +25,14 @@ namespace SkyARFighter.Client
             txbServerPort.Text = "8333";
             bnDisconnect.Enabled = false;
             tabMain.Enabled = false;
-            Text = "SkyARFighter 模拟客户端 - " + Program.Client.UniqueDeviceId;
-            Program.Client.LogAppended += Client_LogAppended;
-            Program.Client.Disconnected += Client_Disconnected;
-            Program.Client.StateChanged += Client_StateChanged;
-            Program.Client.SceneContentChanged += Client_SceneContentChanged;
+            Text = "SkyARFighter - " + Program.Client.UniqueDeviceId;
+            Program.Client.LogAppended += OnClient_LogAppended;
+            Program.Client.Disconnected += OnClient_Disconnected;
+            Program.Client.StateChanged += OnClient_StateChanged;
+            Program.Client.SceneContentChanged += OnClient_SceneContentChanged;
         }
 
-        private void Client_SceneContentChanged()
-        {
-            BeginInvoke(new Action(() =>
-            {
-                pnlScene.Refresh();
-            }));
-        }
-
-        private void Client_StateChanged(SimulateClient.States state)
+        private void OnClient_StateChanged(SimulateClient.States state)
         {
             BeginInvoke(new Action(() =>
             {
@@ -79,14 +71,16 @@ namespace SkyARFighter.Client
             }));
         }
 
-        private void Client_Disconnected()
+        private void OnClient_Disconnected()
         {
+            Program.Client.Scene.Reset();
             BeginInvoke(new Action(() =>
             {
             }));
+            OnClient_SceneContentChanged();
         }
 
-        private void Client_LogAppended(string msg)
+        private void OnClient_LogAppended(string msg)
         {
             BeginInvoke(new Action(() =>
             {
@@ -101,11 +95,34 @@ namespace SkyARFighter.Client
             }
         }
 
+        private void OnClient_SceneContentChanged()
+        {
+            BeginInvoke(new Action(() =>
+            {
+                pnlScene.Refresh();
+
+                string status = "场景玩家: ";
+                if (Program.Client.Scene != null)
+                {
+                    foreach (var plr in Program.Client.Scene.Players)
+                    {
+                        if (plr.Id == Program.Client.Info.Id)
+                            continue;
+                        status += $"{plr.ToString()},";
+                    }
+                }
+                if (!status.Contains(","))
+                    status += "NONE";
+                tsslScenePlayers.Text = status.TrimEnd(',');
+                RefreshTitle();
+            }));
+        }
+
         private void bnDisconnect_Click(object sender, EventArgs e)
         {
             Program.Client.Disconnect();
         }
-        
+
         private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
         {
             var info = new SceneModelInfo();
@@ -205,7 +222,17 @@ namespace SkyARFighter.Client
         {
             Program.Client.GenerateDeviceList();
             Program.Client.RequireDeviceId();
-            Text = "SkyARFighter 模拟客户端 - " + Program.Client.UniqueDeviceId;
+            RefreshTitle();
+        }
+
+        private void RefreshTitle()
+        {
+            string name = "";
+            if (Program.Client.Info == null)
+                name = Program.Client.UniqueDeviceId;
+            else
+                name = $"{Program.Client.Info.Nickname} ({Program.Client.UniqueDeviceId})";
+            Text = "SkyARFighter - " + name;
         }
     }
 }

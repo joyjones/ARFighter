@@ -15,7 +15,7 @@ namespace SkyARFighter.Common
         [RemotingDirection(RemotingDirection.Both)]
         SetupWorld = 0x03,
         [RemotingDirection(RemotingDirection.Both)]
-        SendMessage = 0x05,
+        SendMessage = 0x04,
         [RemotingDirection(RemotingDirection.Both)]
         CreateSceneModel = 0x10,
         [RemotingDirection(RemotingDirection.Both)]

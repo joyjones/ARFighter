@@ -15,11 +15,6 @@ namespace SkyARFighter.Client
             InvokeRemoteMethod(RemotingMethodId.SetupWorld, new object[] { identityName });
         }
 
-        public void Server_SyncPlayerState()
-        {
-            InvokeRemoteMethod(RemotingMethodId.SyncPlayerState, new object[] { Info.Id, cameraPos, cameraRotation });
-        }
-
         public void Server_CreateSceneModel(SceneModelInfo info)
         {
             InvokeRemoteMethod(RemotingMethodId.CreateSceneModel, new object[] { info });
@@ -43,6 +38,11 @@ namespace SkyARFighter.Client
         public void Server_DeleteSceneModel(long modelId)
         {
             InvokeRemoteMethod(RemotingMethodId.ScaleSceneModel, new object[] { modelId });
+        }
+
+        public void Server_SyncPlayerState()
+        {
+            InvokeRemoteMethod(RemotingMethodId.SyncPlayerState, new object[] { cameraPos, cameraRotation });
         }
     }
 }

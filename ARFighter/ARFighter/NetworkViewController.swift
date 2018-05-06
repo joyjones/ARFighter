@@ -25,6 +25,10 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
         SocketClient.instance.delegateMsg = self as MessageViewDelegate
     }
     
+    @IBAction func onPressConnectServer(_ sender: UIButton) {
+        parentView.gameScene.connectServer()
+    }
+    
     @IBAction func onChangeMode(_ sender: UIButton) {
         var mode = OperationMode(rawValue: parentView.gameScene.optMode.rawValue + 1)
         if mode == nil {
@@ -73,8 +77,10 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
         }
         DispatchQueue.main.async {
             if state == PlayerState.Initial {
+                self.btnConnectServer.isEnabled = true
                 self.lblPlayerState.textColor = UIColor.gray
             }else{
+                self.btnConnectServer.isEnabled = false
                 self.lblPlayerState.textColor = UIColor.red
             }
             self.lblPlayerState.text = text

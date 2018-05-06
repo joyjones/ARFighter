@@ -28,7 +28,24 @@ namespace SkyARFighter.Client
         }
 
         public SceneModelInfo[] Models => models.Values.ToArray();
+        public Player[] Players => players.Values.ToArray();
         
+        public void Reset()
+        {
+            players.Clear();
+            models.Clear();
+        }
+
+        public void AddPlayer(PlayerInfo info)
+        {
+            players[info.Id] = new Player(info);
+        }
+
+        public void RemovePlayer(long playerId)
+        {
+            players.Remove(playerId);
+        }
+
         public void AddModel(SceneModelInfo info)
         {
             models[info.Id] = info;

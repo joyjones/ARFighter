@@ -15,23 +15,18 @@ namespace SkyARFighter.Server.Structures
         public void SetupWorld(string identityName)
         {
             Program.Game.RequirePlayerScene(this, identityName);
-            if (CurScene != null)
-                Client_SetupWorld(identityName, CurScene.Info, CurScene.Models.Select(m => m.Info).ToArray());
-            else
+            if (CurScene == null)
                 Client_SendMessage(MessageType.System_Failure, "未能识别到任何场景。");
-        }
-
-        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
-        public void SyncPlayerState(Vector3 pos, Vector3 rotation)
-        {
-            cameraPos = pos;
-            cameraRotation = rotation;
-
-            foreach (var plr in CurScene.Players.ToArray())
+            else
             {
-                if (plr == this)
-                    continue;
-                plr.Client_SyncPlayerState(Id, pos, rotation);
+                Client_SetupWorld(identityName, CurScene.Info, CurScene.Models.Select(m => m.Info).ToArray());
+
+                foreach (var plr in CurScene.Players.ToArray())
+                {
+                    if (plr == this)
+                        continue;
+                    Client_AddPlayer(plr.Info);
+                }
             }
         }
 
@@ -74,6 +69,20 @@ namespace SkyARFighter.Server.Structures
             if (CurScene == null)
                 return;
             CurScene.DeleteModel(Id, modelId);
+        }
+
+        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
+        public void SyncPlayerState(Vector3 pos, Vector3 rotation)
+        {
+            cameraPos = pos;
+            cameraRotation = rotation;
+
+            foreach (var plr in CurScene.Players.ToArray())
+            {
+                if (plr == this)
+                    continue;
+                plr.Client_SyncPlayerState(Id, pos, rotation);
+            }
         }
     }
 }
