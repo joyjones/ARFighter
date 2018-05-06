@@ -36,6 +36,10 @@ namespace SkyARFighter.Server.Structures
         public virtual void Load()
         {
         }
+        public virtual bool Delete(MySqlConnectionFactory fac)
+        {
+            return Info.Delete(fac);
+        }
         public virtual void Tick(TimeSpan elapsedTime)
         {
         }

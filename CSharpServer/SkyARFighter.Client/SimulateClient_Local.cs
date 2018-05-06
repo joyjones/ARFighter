@@ -30,6 +30,21 @@ namespace SkyARFighter.Client
             SceneContentChanged?.Invoke();
         }
 
+        [RemotingMethod(RemotingMethodId.AddPlayer)]
+        public void AddPlayer(PlayerInfo info)
+        {
+        }
+
+        [RemotingMethod(RemotingMethodId.RemovePlayer)]
+        public void RemovePlayer(long playerId)
+        {
+        }
+
+        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
+        public void SyncPlayerState(long playerId, Vector3 camPos, Vector3 camRotation)
+        {
+        }
+
         [RemotingMethod(RemotingMethodId.SendMessage)]
         public void SendMessage(MessageType type, string message)
         {
@@ -64,6 +79,13 @@ namespace SkyARFighter.Client
         public void ScaleSceneModel(long playerId, long modelId, Vector3 scale)
         {
             scene.TransformModel(playerId, modelId, null, null, scale);
+            SceneContentChanged?.Invoke();
+        }
+
+        [RemotingMethod(RemotingMethodId.DeleteSceneModel)]
+        public void DeleteSceneModel(long playerId, long modelId)
+        {
+            scene.DeleteModel(modelId);
             SceneContentChanged?.Invoke();
         }
     }

@@ -18,6 +18,7 @@ enum RemotingMethodId: Int32 {
     case MoveSceneModel
     case ScaleSceneModel
     case RotateSceneModel
+    case DeleteSceneModel
 }
 
 enum PlayerState {
@@ -36,6 +37,7 @@ enum LoginWay: Int32 {
 enum OperationMode: Int32 {
     case None
     case Create
+    case Delete
     case Move
     case Rotate
     case Scale

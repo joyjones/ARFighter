@@ -130,9 +130,11 @@ namespace SkyARFighter.Server.Network
                 sw.Write(bsLen, 0, bsLen.Length);
                 sw.Write(bsCtx, 0, bsCtx.Length);
                 var bsSend = sw.GetBuffer();
+                //System.Diagnostics.Debug.Assert(bsSend.Length == bsType.Length + bsLen.Length + bsCtx.Length);
                 socket.Send(bsSend);
 
-                LogAppended?.Invoke(this, $"调用客户端方法：{methodId}, 参数：{json}");
+                int lenReal = bsType.Length + bsLen.Length + bsCtx.Length;
+                LogAppended?.Invoke(this, $"调用客户端方法：{methodId}, 字节数: {lenReal}/{bsSend.Length}");//, 参数：{json}");
             }
             return true;
         }

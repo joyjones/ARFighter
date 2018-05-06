@@ -12,8 +12,6 @@ import SwiftSocket
 
 class NetworkViewController: UIViewController, MessageViewDelegate {
     
-//    private var socketServer: TcpSocketServer?
-    
     @IBOutlet weak var txbOutput: UITextView!
     @IBOutlet weak var btnConnectServer: UIButton!
     @IBOutlet weak var btnChangeMode: UIButton!
@@ -35,6 +33,7 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
         let textMap: [OperationMode: String] = [
             OperationMode.None: "无",
             OperationMode.Create: "创建",
+            OperationMode.Delete: "删除",
             OperationMode.Move: "移动",
             OperationMode.Rotate: "旋转",
             OperationMode.Scale: "缩放",
@@ -76,7 +75,7 @@ class NetworkViewController: UIViewController, MessageViewDelegate {
             if state == PlayerState.Initial {
                 self.lblPlayerState.textColor = UIColor.gray
             }else{
-                self.lblPlayerState.textColor = UIColor.orange
+                self.lblPlayerState.textColor = UIColor.red
             }
             self.lblPlayerState.text = text
         }

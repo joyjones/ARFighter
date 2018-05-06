@@ -21,9 +21,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName, sceneInfo, models });
         }
 
-        public void Client_SyncCamera(Matrix mat)
+        public void Client_SyncPlayerState(long playerId, Vector3 pos, Vector3 rotation)
         {
-            Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
+            Peer.SendMessage(RemotingMethodId.SyncPlayerState, new object[] { playerId, pos, rotation });
         }
 
         public void Client_SendMessage(MessageType type, string message)
@@ -49,6 +49,11 @@ namespace SkyARFighter.Server.Structures
         public void Client_ScaleSceneModel(long playerId, long modelId, Vector3 scale)
         {
             Peer.SendMessage(RemotingMethodId.ScaleSceneModel, new object[] { playerId, modelId, scale });
+        }
+
+        public void Client_DeleteSceneModel(long playerId, long modelId)
+        {
+            Peer.SendMessage(RemotingMethodId.ScaleSceneModel, new object[] { playerId, modelId });
         }
     }
 }

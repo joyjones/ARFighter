@@ -56,6 +56,7 @@ namespace SkyARFighter.Server.Structures
             return Info.Nickname + key;
         }
 
-        private Matrix cameraTransform = new Matrix();
+        private Vector3 cameraPos = new Vector3();
+        private Vector3 cameraRotation = new Vector3();
     }
 }

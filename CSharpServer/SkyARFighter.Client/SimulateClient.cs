@@ -30,7 +30,6 @@ namespace SkyARFighter.Client
 
         public SimulateClient()
         {
-            cameraTransform = new Matrix();
             timer = new System.Timers.Timer();
             timer.Interval = 100;
             timer.Enabled = false;
@@ -112,7 +111,7 @@ namespace SkyARFighter.Client
             ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
             {
                 Thread.CurrentThread.Name = "客户端通信处理线程";
-                var buffer = new byte[4096];
+                var buffer = new byte[40960];
                 while (socket.Connected)
                 {
                     waitingNextMessage.Reset();
@@ -188,7 +187,7 @@ namespace SkyARFighter.Client
             if (ts.TotalMilliseconds >= 100)
             {
                 timer.Enabled = false;
-                Server_SyncCamera();
+                //Server_SyncPlayerState();
                 lastElapsedTick = e.SignalTime.Ticks;
             }
         }
@@ -279,7 +278,8 @@ namespace SkyARFighter.Client
 
         private Socket socket = null;
         private long lastElapsedTick;
-        private Matrix cameraTransform;
+        private Vector3 cameraPos = new Vector3();
+        private Vector3 cameraRotation = new Vector3();
         private System.Timers.Timer timer;
         private GameScene scene = null;
         private PlayerInfo playerInfo = null;

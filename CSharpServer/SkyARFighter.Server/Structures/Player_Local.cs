@@ -21,10 +21,18 @@ namespace SkyARFighter.Server.Structures
                 Client_SendMessage(MessageType.System_Failure, "未能识别到任何场景。");
         }
 
-        [RemotingMethod(RemotingMethodId.SyncCamera)]
-        public void SyncCamera(Matrix mat)
+        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
+        public void SyncPlayerState(Vector3 pos, Vector3 rotation)
         {
-            cameraTransform.CopyFrom(mat);
+            cameraPos = pos;
+            cameraRotation = rotation;
+
+            foreach (var plr in CurScene.Players.ToArray())
+            {
+                if (plr == this)
+                    continue;
+                plr.Client_SyncPlayerState(Id, pos, rotation);
+            }
         }
 
         [RemotingMethod(RemotingMethodId.CreateSceneModel)]
@@ -58,6 +66,14 @@ namespace SkyARFighter.Server.Structures
             if (CurScene == null)
                 return;
             CurScene.TransformModel(Id, modelId, null, null, scale);
+        }
+
+        [RemotingMethod(RemotingMethodId.DeleteSceneModel)]
+        public void DeleteSceneModel(long modelId)
+        {
+            if (CurScene == null)
+                return;
+            CurScene.DeleteModel(Id, modelId);
         }
     }
 }

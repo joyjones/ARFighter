@@ -15,8 +15,6 @@ namespace SkyARFighter.Common
         [RemotingDirection(RemotingDirection.Both)]
         SetupWorld = 0x03,
         [RemotingDirection(RemotingDirection.Both)]
-        SyncCamera = 0x04,
-        [RemotingDirection(RemotingDirection.Both)]
         SendMessage = 0x05,
         [RemotingDirection(RemotingDirection.Both)]
         CreateSceneModel = 0x10,
@@ -26,6 +24,14 @@ namespace SkyARFighter.Common
         ScaleSceneModel = 0x12,
         [RemotingDirection(RemotingDirection.Both)]
         RotateSceneModel = 0x13,
+        [RemotingDirection(RemotingDirection.Both)]
+        DeleteSceneModel = 0x14,
+        [RemotingDirection(RemotingDirection.S2C)]
+        AddPlayer = 0x20,
+        [RemotingDirection(RemotingDirection.S2C)]
+        RemovePlayer = 0x21,
+        [RemotingDirection(RemotingDirection.Both)]
+        SyncPlayerState = 0x22,
     }
 
     public enum LoginWay

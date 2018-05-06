@@ -72,7 +72,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 gameScene.mainPlayer!.createModel(templateId: 1, pos: simd_float3(pos.x, pos.y, pos.z))
             }
         }
-        else if gameScene.optMode == .Move {
+        else if gameScene.optMode != .None {
             let resultObjs = sceneView.hitTest(tapPoint, options: [
                 SCNHitTestOption.firstFoundOnly: false,
                 SCNHitTestOption.ignoreHiddenNodes: false,
@@ -90,13 +90,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             
             if foundModel == nil {
-                let selModel = gameScene.selectedModel
-                if selModel != nil && resultFpt.first != nil {
-                    let pos = resultFpt.first!.worldTransform.columns.3
-                    gameScene.mainPlayer!.moveModel(model: selModel!, pos: simd_float3(pos.x, pos.y, pos.z))
+                if gameScene.optMode == .Move {
+                    let selModel = gameScene.selectedModel
+                    if selModel != nil && resultFpt.first != nil {
+                        let pos = resultFpt.first!.worldTransform.columns.3
+                        gameScene.mainPlayer!.moveModel(model: selModel!, pos: simd_float3(pos.x, pos.y, pos.z))
+                    }
                 }
             }else{
-                if gameScene.selectedModel != nil && foundModel!.id == gameScene.selectedModel!.id {
+                if (gameScene.optMode == .Delete){
+                    gameScene.mainPlayer!.deleteModel(model: foundModel!)
+                }
+                else if gameScene.selectedModel != nil && foundModel!.id == gameScene.selectedModel!.id {
                     gameScene.selectedModel = nil
                 }else{
                     gameScene.selectedModel = foundModel

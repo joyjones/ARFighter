@@ -41,7 +41,6 @@ namespace SkyARFighter.Common.DataInfos
                     var arrayFieldInfo = new List<FieldInfo>(GetType().GetFields());
                     var ps = new List<Chloe.DbParam>();
 
-                    string strPrimaryKey = "Id";
                     string sets = "";
                     if (GetType().GetCustomAttributes(typeof(TableAttribute), false).FirstOrDefault() is TableAttribute tAttr)
                     {
@@ -61,12 +60,25 @@ namespace SkyARFighter.Common.DataInfos
                         }
 
                         sql += sets;
-                        sql += $" where {strPrimaryKey} = {Id}";
+                        sql += $" where id={Id}";
 
                         ctx.Session.ExecuteNonQuery(sql, ps.ToArray());
                     }
                 }
             }
+        }
+        public bool Delete(MySqlConnectionFactory fac)
+        {
+            int c = 0;
+            using (var ctx = fac.CreateContext())
+            {
+                if (GetType().GetCustomAttributes(typeof(TableAttribute), false).FirstOrDefault() is TableAttribute tAttr)
+                {
+                    var sql = $"delete from {tAttr.Name} where id={Id}";
+                    c += ctx.Session.ExecuteNonQuery(sql);
+                }
+            }
+            return c > 0;
         }
         public static long AutoGenerateID
         {

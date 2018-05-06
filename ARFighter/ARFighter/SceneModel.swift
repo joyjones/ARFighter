@@ -81,7 +81,7 @@ class SceneModel: GameObject {
         self.parentScene = scene
         self.authorPlayerId = info.create_player_id
         
-        geometry = SCNSphere(radius: 0.1)
+        geometry = SCNSphere(radius: 1)
         sceneNode = SCNNode(geometry: geometry)
         self.parentScene.rootNode.addChildNode(sceneNode!)
         
@@ -90,6 +90,14 @@ class SceneModel: GameObject {
         position = info.pos
         scale = info.scale
         rotation = info.rotation
+    }
+    
+    func detach() {
+        sceneNode?.removeFromParentNode()
+    }
+    
+    func attach() {
+        parentScene.rootNode.addChildNode(sceneNode!)
     }
     
     let modelId: Int64

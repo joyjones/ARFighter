@@ -19,7 +19,7 @@ class MainPlayer: Player {
         state = .SearchOrigin
         
         // for test
-//        server_requireScene(identityName: "test01")
+//        server_requireScene(identityName: "test02")
     }
     
     func updateWorldOrigin(imageName: String, transform: matrix_float4x4) {
@@ -46,10 +46,17 @@ class MainPlayer: Player {
         smi.model_id = templateId
         smi.pos = pos
         smi.rotation = simd_float3(0)
-        smi.scale = simd_float3(1)
+        smi.scale = simd_float3(0.05)
         if let model = parentScene?.addModel(info: smi) {
             server_createSceneModel(model: model)
         }
+    }
+    
+    func deleteModel(model: SceneModel) {
+        if !parentScene!.removeModel(playerId: id, modelId: model.id) {
+            return
+        }
+        SocketClient.instance.sendMessage(cmd: .DeleteSceneModel, context: [model.id])
     }
     
     func moveModel(model: SceneModel, pos: simd_float3) {
@@ -72,7 +79,8 @@ class MainPlayer: Player {
         if state == .ScenePlaying {
             if parentScene!.session!.currentFrame != nil {
                 cameraTransform = parentScene!.session!.currentFrame!.camera.transform
-                server_syncCamera(mat: cameraTransform)
+                
+//                server_syncCamera(mat: cameraTransform)
             }
         }
         else if state == .SceneLoading {

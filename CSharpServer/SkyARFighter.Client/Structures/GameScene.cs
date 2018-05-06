@@ -34,6 +34,11 @@ namespace SkyARFighter.Client
             models[info.Id] = info;
         }
 
+        public void DeleteModel(long modelId)
+        {
+            models.Remove(modelId);
+        }
+
         public SceneModelInfo GetModel(long id)
         {
             models.TryGetValue(id, out SceneModelInfo model);
@@ -66,5 +71,6 @@ namespace SkyARFighter.Client
         }
 
         private Dictionary<long, SceneModelInfo> models = new Dictionary<long, SceneModelInfo>();
+        private Dictionary<long, Player> players = new Dictionary<long, Player>();
     }
 }

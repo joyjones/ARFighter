@@ -24,6 +24,7 @@ namespace SkyARFighter.Server.Structures
             get; private set;
         }
         public IEnumerable<SceneModel> Models => models.Values;
+        public IEnumerable<Player> Players => players.Values;
 
         public override void Load()
         {
@@ -99,6 +100,21 @@ namespace SkyARFighter.Server.Structures
                     plr.Client_RotateSceneModel(playerId, modelId, rotation);
                 if (scale != null)
                     plr.Client_ScaleSceneModel(playerId, modelId, scale);
+            }
+        }
+        public void DeleteModel(long playerId, long modelId)
+        {
+            var model = GetModel(modelId);
+            if (model == null)
+                return;
+            model.Delete(ParentGame.DB);
+            models.Remove(modelId);
+            
+            foreach (var plr in players.Values.ToArray())
+            {
+                if (plr.Id == playerId)
+                    continue;
+                plr.Client_DeleteSceneModel(playerId, modelId);
             }
         }
 

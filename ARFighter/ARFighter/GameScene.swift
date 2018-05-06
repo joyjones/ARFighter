@@ -149,6 +149,15 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         }
     }
     
+    func removeModel(playerId: Int64, modelId: Int64) -> Bool {
+        let model = models[modelId]
+        if model == nil {
+            return false
+        }
+        model?.detach()
+        return models.removeValue(forKey: modelId) != nil
+    }
+    
     var info: SceneInfo?
     var startupName: String?
     var session: ARSession?

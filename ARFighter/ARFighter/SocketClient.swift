@@ -53,6 +53,12 @@ class SocketClient {
                     if bytes.count > length {
                         bytes.removeSubrange(Int(length)...(bytes.count - 1))
                     }
+                    else if bytes.count < length {
+                        repeat{
+                            let bytesPlus = client!.read(Int(length) - bytes.count, timeout: 1)
+                            bytes.append(contentsOf: bytesPlus!)
+                        }while(bytes.count < length)
+                    }
                     let json = String(bytes: bytes, encoding: .utf8)!
                     let args = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [Any]
                     
