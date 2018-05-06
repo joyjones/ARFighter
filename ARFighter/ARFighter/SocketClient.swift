@@ -8,21 +8,12 @@
 
 import SwiftSocket
 
-protocol NetworkDelegate {
-    func appendLog(msg: String)
-    func alert(msg: String)
-}
-
-protocol RemotingMethodDelegate {
-    func invokeMethod(methodId: RemotingMethodId, args: [Any])
-}
-
 class SocketClient {
     
     static let instance = SocketClient()
     private var client: TCPClient?
     private(set) var isConnected = false
-    var delegate: NetworkDelegate?
+    var delegateMsg: MessageViewDelegate?
     var delegateMethods: RemotingMethodDelegate?
     
     let updateQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".network")
@@ -34,12 +25,13 @@ class SocketClient {
         case .success:
             isConnected = true
             updateQueue.async {
-                self.delegate?.alert(msg: "连接成功！")
+                self.delegateMsg?.alert(msg: "连接成功！")
                 self.beginReadMessage()
             }
+            login()
         case .failure(let error):
             DispatchQueue.main.async {
-                self.delegate?.alert(msg: error.localizedDescription)
+                self.delegateMsg?.alert(msg: error.localizedDescription)
             }
         }
     }
@@ -87,4 +79,10 @@ class SocketClient {
         }
         _ = client?.send(data: bytes)
     }
+    
+    func login() {
+        SocketClient.instance.sendMessage(cmd: .Login, context: [LoginWay.DeviceId.rawValue, uniqueDeviceId, ""])
+    }
+    
+    let uniqueDeviceId = UIDevice.current.identifierForVendor!.uuidString
 }

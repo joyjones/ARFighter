@@ -12,14 +12,23 @@ namespace SkyARFighter.Server.Structures
 {
     public partial class Player : GameObject<PlayerInfo>
     {
-        public Player(PlayerInfo info)
+        public Player(PlayerPeer peer, PlayerInfo info)
             : base(info)
-        {
-        }
-        public Player(PlayerPeer peer)
         {
             Peer = peer;
             Peer.HostPlayer = this;
+            GenerateAccessToken();
+        }
+        public Player(PlayerPeer peer, string deviceId)
+        {
+            Peer = peer;
+            Peer.HostPlayer = this;
+            Info = new PlayerInfo();
+            Id = Info.Id;
+            Info.UniqueDeviceId = deviceId;
+            Info.Nickname = "玩家" + Info.Id.ToString().Substring(Info.Id.ToString().Length - 5);
+            GenerateAccessToken();
+            AddModelInfo(Info);
         }
 
         public PlayerPeer Peer
@@ -30,6 +39,21 @@ namespace SkyARFighter.Server.Structures
         public Scene CurScene
         {
             get; set;
+        }
+
+        public void GenerateAccessToken()
+        {
+            Info.AccessToken = CommonMethods.MakeRandomString(32);
+        }
+
+        public override string ToString()
+        {
+            var key = Info.Account;
+            if (string.IsNullOrEmpty(key))
+                key = Info.UniqueDeviceId;
+            if (!string.IsNullOrEmpty(key))
+                key = $"({key})";
+            return Info.Nickname + key;
         }
 
         private Matrix cameraTransform = new Matrix();

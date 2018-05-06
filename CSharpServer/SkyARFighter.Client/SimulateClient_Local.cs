@@ -15,11 +15,12 @@ namespace SkyARFighter.Client
     public partial class SimulateClient
     {
         [RemotingMethod(RemotingMethodId.Welcome)]
-        public void InitPlayer(long playerId)
+        public void InitPlayer(string accessToken, PlayerInfo info)
         {
-            playerInfo = new PlayerInfo();
-            playerInfo.Id = playerId;
+            playerInfo = info;
+            playerInfo.AccessToken = accessToken;
         }
+
         [RemotingMethod(RemotingMethodId.SetupWorld)]
         public void SetupWorld(string identityName, SceneInfo sceneInfo, SceneModelInfo[] models)
         {
@@ -29,7 +30,8 @@ namespace SkyARFighter.Client
             SceneContentChanged?.Invoke();
         }
 
-        public void AddPlayer(long playerId, Matrix cameraTrans)
+        [RemotingMethod(RemotingMethodId.SendMessage)]
+        public void SendMessage(MessageType type, string message)
         {
         }
 
@@ -38,6 +40,10 @@ namespace SkyARFighter.Client
         {
             scene.AddModel(info);
             SceneContentChanged?.Invoke();
+            if (info.CreatePlayerId == playerInfo.Id)
+            {
+                Server_CreateSceneModel(info);
+            }
         }
 
         [RemotingMethod(RemotingMethodId.MoveSceneModel)]

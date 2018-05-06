@@ -8,12 +8,16 @@ namespace SkyARFighter.Common
 {
     public enum RemotingMethodId
     {
+        [RemotingDirection(RemotingDirection.C2S)]
+        Login = 0x01,
         [RemotingDirection(RemotingDirection.S2C)]
-        Welcome = 0x01,
+        Welcome = 0x02,
         [RemotingDirection(RemotingDirection.Both)]
-        SetupWorld = 0x02,
+        SetupWorld = 0x03,
         [RemotingDirection(RemotingDirection.Both)]
-        SyncCamera = 0x03,
+        SyncCamera = 0x04,
+        [RemotingDirection(RemotingDirection.Both)]
+        SendMessage = 0x05,
         [RemotingDirection(RemotingDirection.Both)]
         CreateSceneModel = 0x10,
         [RemotingDirection(RemotingDirection.Both)]
@@ -22,6 +26,13 @@ namespace SkyARFighter.Common
         ScaleSceneModel = 0x12,
         [RemotingDirection(RemotingDirection.Both)]
         RotateSceneModel = 0x13,
+    }
+
+    public enum LoginWay
+    {
+        DeviceId,
+        Account,
+        AccessToken
     }
 
     public enum SceneModelType
@@ -37,6 +48,13 @@ namespace SkyARFighter.Common
         特效,
         按钮触发器,
         角色 = 100
+    }
+
+    public enum MessageType
+    {
+        System_Failure,
+        System_Notification,
+        Player_Chat,
     }
 
     public class RemotingMethodAttribute: Attribute

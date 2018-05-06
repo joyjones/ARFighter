@@ -10,47 +10,38 @@ import UIKit
 import SceneKit
 import SwiftSocket
 
-class NetworkViewController: UIViewController, NetworkDelegate {
+class NetworkViewController: UIViewController, MessageViewDelegate {
     
 //    private var socketServer: TcpSocketServer?
     
     @IBOutlet weak var txbOutput: UITextView!
     @IBOutlet weak var btnConnectServer: UIButton!
-    @IBOutlet weak var btnCreateServer: UIButton!
-    @IBOutlet weak var btnStopServer: UIButton!
+    @IBOutlet weak var btnChangeMode: UIButton!
+    @IBOutlet weak var lblPlayerState: UILabel!
+    
+    var parentView: ViewController {
+        return parent as! ViewController
+    }
     
     override func viewDidLoad() {
-        SocketClient.instance.delegate = self as NetworkDelegate
-        SocketClient.instance.connectServer(address: "192.168.31.219", port: 8333)
-//        SocketClient.instance.connectServer(address: "10.211.55.5", port: 8333)
-//        SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
+        SocketClient.instance.delegateMsg = self as MessageViewDelegate
     }
     
-    @IBAction func connectServer(_ sender: UIButton) {
-        
-    }
-    @IBAction func startServer(_ sender: UIButton) {
-        let url = "http://apis.juhe.cn/mobile/get?phone=13301388888&key=4e602dad4a05b4d491ffb82511613158"
-        HttpHelper.Shared.Get(path: url, success: onSuccess, failure: onFail)
-        
-//        return
-//        socketServer = TcpSocketServer()
-//        socketServer?.start()
-    }
-    @IBAction func stopServer(_ sender: UIButton) {
-//        disconnectServer()
-    }
-    
-    func onSuccess(_ result: String)
-    {
-        DispatchQueue.main.async {
-            self.txbOutput.text = result
+    @IBAction func onChangeMode(_ sender: UIButton) {
+        var mode = OperationMode(rawValue: parentView.gameScene.optMode.rawValue + 1)
+        if mode == nil {
+            mode = OperationMode.None
         }
+        let textMap: [OperationMode: String] = [
+            OperationMode.None: "无",
+            OperationMode.Create: "创建",
+            OperationMode.Move: "移动",
+            OperationMode.Rotate: "旋转",
+            OperationMode.Scale: "缩放",
+        ]
+        btnChangeMode.setTitle("模式: " + textMap[mode!]!, for: [])
+        parentView.gameScene.optMode = mode!
     }
-    func onFail(_ result: Error)
-    {
-    }
-    
     
     func appendLog(msg: String) {
         DispatchQueue.main.async {
@@ -65,6 +56,29 @@ class NetworkViewController: UIViewController, NetworkDelegate {
         //1.5秒后自动消失
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
             alertController.dismiss(animated: false, completion: nil)
+        }
+    }
+    
+    func updatePlayerState(name: String?, state: PlayerState) {
+        let textMap: [PlayerState: String] = [
+            PlayerState.Initial: "未登录",
+            PlayerState.SceneLoading: "正在请求场景..",
+            PlayerState.SearchOrigin: "查找启动标识物..",
+            PlayerState.ScenePlaying: "游戏中"
+        ]
+        var text = "";
+        if state == .Initial || name == nil || name?.count == 0 {
+            text = textMap[state]!
+        }else{
+            text = "\(name!): \(textMap[state]!)"
+        }
+        DispatchQueue.main.async {
+            if state == PlayerState.Initial {
+                self.lblPlayerState.textColor = UIColor.gray
+            }else{
+                self.lblPlayerState.textColor = UIColor.orange
+            }
+            self.lblPlayerState.text = text
         }
     }
 }

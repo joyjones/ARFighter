@@ -11,9 +11,9 @@ namespace SkyARFighter.Server.Structures
 {
     public partial class Player
     {
-        public void Client_Welcome(long playerId)
+        public void Client_Welcome(PlayerInfo info)
         {
-            Peer.SendMessage(RemotingMethodId.Welcome, new object[] { playerId });
+            Peer.SendMessage(RemotingMethodId.Welcome, new object[] { info.AccessToken, info });
         }
 
         public void Client_SetupWorld(string identityName, SceneInfo sceneInfo, SceneModelInfo[] models)
@@ -24,6 +24,11 @@ namespace SkyARFighter.Server.Structures
         public void Client_SyncCamera(Matrix mat)
         {
             Peer.SendMessage(RemotingMethodId.SyncCamera, new object[] { mat });
+        }
+
+        public void Client_SendMessage(MessageType type, string message)
+        {
+            Peer.SendMessage(RemotingMethodId.SendMessage, new object[] { type, message });
         }
 
         public void Client_CreateSceneModel(SceneModelInfo info)

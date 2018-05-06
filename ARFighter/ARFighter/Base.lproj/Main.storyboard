@@ -62,7 +62,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="0QC-vn-kDM" userLabel="Network outputs">
-                                <rect key="frame" x="0.0" y="40" width="375" height="136"/>
+                                <rect key="frame" x="0.0" y="80" width="375" height="96"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10280039612676056" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" hint="Logs">
                                     <bool key="isElement" value="YES"/>
@@ -70,50 +70,54 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="erI-dd-2O5">
-                                <rect key="frame" x="282" y="13" width="77" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rbl-Dd-Lq9">
+                                <rect key="frame" x="16" y="44" width="134" height="28"/>
+                                <state key="normal" title="模式: 创建"/>
+                                <connections>
+                                    <action selector="onChangeMode:" destination="kxV-S7-pNF" eventType="touchDown" id="xqg-xf-mvg"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="未登录" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mEr-o2-WYv">
+                                <rect key="frame" x="16" y="13" width="225" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="erI-dd-2O5">
+                                <rect key="frame" x="266" y="8" width="93" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="btnConnectServer">
                                     <accessibilityTraits key="traits" button="YES"/>
+                                    <bool key="isElement" value="YES"/>
                                 </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="93" id="BEV-UI-Cqx"/>
+                                </constraints>
                                 <state key="normal" title="连接服务器"/>
                                 <connections>
                                     <action selector="connectServer:" destination="kxV-S7-pNF" eventType="touchDown" id="NPv-Ce-sGR"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rbl-Dd-Lq9">
-                                <rect key="frame" x="16" y="13" width="77" height="30"/>
-                                <state key="normal" title="作为服务器"/>
-                                <connections>
-                                    <action selector="startServer:" destination="kxV-S7-pNF" eventType="touchDown" id="VGe-J1-AcJ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bO2-0D-Duo">
-                                <rect key="frame" x="119" y="13" width="31" height="30"/>
-                                <state key="normal" title="断开"/>
-                                <connections>
-                                    <action selector="stopServer:" destination="kxV-S7-pNF" eventType="touchDown" id="Rpm-qq-hea"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="erI-dd-2O5" firstAttribute="top" secondItem="WRN-q4-l6Y" secondAttribute="topMargin" constant="13" id="215-Rt-aDa"/>
+                            <constraint firstItem="erI-dd-2O5" firstAttribute="top" secondItem="WRN-q4-l6Y" secondAttribute="topMargin" constant="8" id="215-Rt-aDa"/>
                             <constraint firstItem="Rbl-Dd-Lq9" firstAttribute="leading" secondItem="znN-Ib-VOe" secondAttribute="leading" constant="16" id="4L9-UL-HPX"/>
                             <constraint firstAttribute="bottomMargin" secondItem="0QC-vn-kDM" secondAttribute="bottom" id="9mD-bD-rrz"/>
-                            <constraint firstItem="Rbl-Dd-Lq9" firstAttribute="top" secondItem="znN-Ib-VOe" secondAttribute="top" constant="13" id="CbP-JK-UO8"/>
+                            <constraint firstItem="Rbl-Dd-Lq9" firstAttribute="top" secondItem="znN-Ib-VOe" secondAttribute="top" constant="44" id="CbP-JK-UO8"/>
                             <constraint firstItem="0QC-vn-kDM" firstAttribute="leading" secondItem="WRN-q4-l6Y" secondAttribute="leadingMargin" constant="-16" id="EKf-2W-qxk"/>
+                            <constraint firstItem="mEr-o2-WYv" firstAttribute="top" secondItem="znN-Ib-VOe" secondAttribute="top" constant="13" id="Q1e-Sb-zyG"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0QC-vn-kDM" secondAttribute="trailing" constant="-16" id="Vuh-rQ-rh1"/>
-                            <constraint firstItem="0QC-vn-kDM" firstAttribute="top" secondItem="WRN-q4-l6Y" secondAttribute="topMargin" constant="40" id="WHD-8y-LQd"/>
-                            <constraint firstItem="bO2-0D-Duo" firstAttribute="leading" secondItem="Rbl-Dd-Lq9" secondAttribute="trailing" constant="26" id="XWD-sT-TRb"/>
-                            <constraint firstItem="bO2-0D-Duo" firstAttribute="top" secondItem="znN-Ib-VOe" secondAttribute="top" constant="13" id="k8I-Sx-61d"/>
+                            <constraint firstItem="0QC-vn-kDM" firstAttribute="top" secondItem="WRN-q4-l6Y" secondAttribute="topMargin" constant="80" id="WHD-8y-LQd"/>
+                            <constraint firstItem="mEr-o2-WYv" firstAttribute="leading" secondItem="znN-Ib-VOe" secondAttribute="leading" constant="16" id="Zq5-NZ-0TP"/>
+                            <constraint firstItem="erI-dd-2O5" firstAttribute="leading" secondItem="mEr-o2-WYv" secondAttribute="trailing" constant="25" id="oXs-h6-Lig"/>
                             <constraint firstItem="erI-dd-2O5" firstAttribute="trailing" secondItem="WRN-q4-l6Y" secondAttribute="trailingMargin" id="pg7-Rq-QlJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="znN-Ib-VOe"/>
                     </view>
                     <connections>
+                        <outlet property="btnChangeMode" destination="Rbl-Dd-Lq9" id="0WO-xW-045"/>
                         <outlet property="btnConnectServer" destination="erI-dd-2O5" id="hSu-Ur-FL6"/>
-                        <outlet property="btnCreateServer" destination="Rbl-Dd-Lq9" id="ygp-y4-s2o"/>
-                        <outlet property="btnStopServer" destination="bO2-0D-Duo" id="euS-nO-8RE"/>
+                        <outlet property="lblPlayerState" destination="mEr-o2-WYv" id="H5h-gw-DJw"/>
                         <outlet property="txbOutput" destination="0QC-vn-kDM" id="Juf-2Y-HT6"/>
                     </connections>
                 </viewController>

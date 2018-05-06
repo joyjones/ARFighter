@@ -93,9 +93,7 @@ namespace SkyARFighter.Server.Network
 
         private PlayerPeer CreatePeerInstance(Socket socket)
         {
-            var peer = new PlayerPeer(socket);
-            Program.Game.EnterPlayer(peer);
-            return peer;
+            return new PlayerPeer(Program.Game, socket);
         }
 
         private ManualResetEvent startedUp = new ManualResetEvent(false);

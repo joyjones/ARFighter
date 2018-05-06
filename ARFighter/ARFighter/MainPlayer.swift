@@ -8,38 +8,24 @@
 import SceneKit
 import ARKit
 
-enum RemotingMethodId: Int32 {
-    case Welcome = 0x01
-    case SetupWorld
-    case SyncCamera
-    case CreateSceneModel = 0x10
-    case MoveSceneModel
-    case ScaleSceneModel
-    case RotateSceneModel
-}
-
-enum PlayerState {
-    case Initial
-    case SearchOrigin
-    case SceneLoading
-    case ScenePlaying
-}
-
 class MainPlayer: Player {
     
     override init(scene: GameScene) {
         super.init(scene: scene)
     }
     
-    func initPlayer(playerId: Int64) {
-        id = playerId
-        
+    override func initPlayer(info: PlayerInfo) {
+        super.initPlayer(info: info)
         state = .SearchOrigin
+        
         // for test
 //        server_requireScene(identityName: "test01")
     }
     
     func updateWorldOrigin(imageName: String, transform: matrix_float4x4) {
+        if imageName.count == 0 || state == .Initial {
+            return
+        }
         let pos = transform.columns.3
         print("init world at: \(pos.x),\(pos.y),\(pos.z)")
         // let trans = GLKMatrix4RotateX(mat, -Float.pi * 0.5)
@@ -66,11 +52,32 @@ class MainPlayer: Player {
         }
     }
     
+    func moveModel(model: SceneModel, pos: simd_float3) {
+        model.position = pos
+        SocketClient.instance.sendMessage(cmd: .MoveSceneModel, context: [model.id, pos.toJson()])
+    }
+    
+    func scaleModel(model: SceneModel, scale: simd_float3) {
+        model.scale = scale
+        SocketClient.instance.sendMessage(cmd: .ScaleSceneModel, context: [model.id, scale.toJson()])
+    }
+    
+    func rotateModel(model: SceneModel, rotation: simd_float3) {
+        model.rotation = rotation
+        SocketClient.instance.sendMessage(cmd: .RotateSceneModel, context: [model.id, rotation.toJson()])
+    }
+    
     override func tick(spanTime: Double) {
+        _elapsedTime += spanTime
         if state == .ScenePlaying {
             if parentScene!.session!.currentFrame != nil {
                 cameraTransform = parentScene!.session!.currentFrame!.camera.transform
                 server_syncCamera(mat: cameraTransform)
+            }
+        }
+        else if state == .SceneLoading {
+            if _elapsedTime > 5 {
+                state = .SearchOrigin
             }
         }
     }
@@ -87,5 +94,16 @@ class MainPlayer: Player {
         SocketClient.instance.sendMessage(cmd: .CreateSceneModel, context: [model.toJson()])
     }
     
-    var state = PlayerState.Initial
+    private var _state: PlayerState = .Initial
+    private var _elapsedTime: Double = 0
+    var state: PlayerState {
+        get { return _state }
+        set {
+            if _state != newValue {
+                _state = newValue
+                _elapsedTime = 0
+                parentScene!.delegateMsg?.updatePlayerState(name: info!.nickname, state: _state)
+            }
+        }
+    }
 }

@@ -3,6 +3,7 @@ using SkyARFighter.Common;
 using SkyARFighter.Common.DataInfos;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
@@ -35,6 +36,9 @@ namespace SkyARFighter.Client
             timer.Enabled = false;
             timer.Elapsed += Tick;
             State = States.Offline;
+
+            RequireDeviceId();
+            System.Diagnostics.Debug.Assert(UniqueDeviceId != null);
         }
 
         public enum States
@@ -54,6 +58,7 @@ namespace SkyARFighter.Client
                 if (curState != value)
                 {
                     curState = value;
+                    timer.Enabled = curState != States.Offline;
                     StateChanged?.Invoke(curState);
                 }
             }
@@ -64,6 +69,8 @@ namespace SkyARFighter.Client
         public bool Connected => socket != null && socket.Connected;
 
         public PlayerInfo Info => playerInfo;
+
+        public string UniqueDeviceId { get; private set; }
 
         public bool Connect(string ipAddress, int port)
         {
@@ -82,6 +89,9 @@ namespace SkyARFighter.Client
             State = States.Connected;
             
             ReceiveMessage();
+
+            if (UniqueDeviceId != null)
+                Server_Login(UniqueDeviceId);
             return true;
         }
 
@@ -96,20 +106,7 @@ namespace SkyARFighter.Client
                 State = States.Offline;
             }
         }
-
-        public bool SendMessage(string msg)
-        {
-            if (!Connected)
-                return false;
-
-            var bytes = Encoding.Unicode.GetBytes(msg);
-            var header = BitConverter.GetBytes(bytes.Length);
-            var data = new byte[header.Length + bytes.Length];
-            Array.Copy(header, data, header.Length);
-            Array.Copy(bytes, 0, data, 4, bytes.Length);
-            return socket.Send(data) > 0;
-        }
-
+        
         private void ReceiveMessage()
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
@@ -194,6 +191,90 @@ namespace SkyARFighter.Client
                 Server_SyncCamera();
                 lastElapsedTick = e.SignalTime.Ticks;
             }
+        }
+
+        public static readonly int MaxDeviceCount = 10;
+        public static readonly string DeviceListFile = $"{Environment.CurrentDirectory}\\devices.dat";
+        public void GenerateDeviceList()
+        {
+            using (var sw = new StreamWriter(DeviceListFile))
+            {
+                for (int i = 0; i < MaxDeviceCount; ++i)
+                {
+                    var dev = $"SIMCLINET{i + 1}:0";
+                    sw.WriteLine(dev);
+                }
+            }
+        }
+
+        public string RequireDeviceId()
+        {
+            if (!File.Exists(DeviceListFile))
+                GenerateDeviceList();
+            string deviceId = null;
+            var lst = new List<(string dev, bool used)>();
+            using (var sr = new StreamReader(DeviceListFile))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var ln = sr.ReadLine();
+                    if (string.IsNullOrEmpty(ln))
+                        continue;
+                    string[] ss = ln.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    bool used = int.Parse(ss[1]) != 0;
+                    if (deviceId == null && !used)
+                    {
+                        deviceId = ss[0];
+                        used = true;
+                    }
+                    lst.Add((ss[0], used));
+                }
+            }
+            if (deviceId != null)
+            {
+                using (var sw = new StreamWriter(DeviceListFile))
+                {
+                    foreach (var (dev, used) in lst)
+                        sw.WriteLine($"{dev}:{(used ? 1 : 0)}");
+                }
+            }
+            UniqueDeviceId = deviceId;
+            return deviceId;
+        }
+
+        public bool ReleaseDeviceId()
+        {
+            if (!File.Exists(DeviceListFile) || string.IsNullOrEmpty(UniqueDeviceId))
+                return false;
+            bool released = false;
+            var lst = new List<(string dev, bool used)>();
+            using (var sr = new StreamReader(DeviceListFile))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var ln = sr.ReadLine();
+                    if (string.IsNullOrEmpty(ln))
+                        continue;
+                    string[] ss = ln.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    bool used = int.Parse(ss[1]) != 0;
+                    if (ss[0] == UniqueDeviceId)
+                    {
+                        used = false;
+                        released = true;
+                    }
+                    lst.Add((ss[0], used));
+                }
+            }
+            if (released)
+            {
+                UniqueDeviceId = null;
+                using (var sw = new StreamWriter(DeviceListFile))
+                {
+                    foreach (var (dev, used) in lst)
+                        sw.WriteLine($"{dev}:{(used ? 1 : 0)}");
+                }
+            }
+            return released;
         }
 
         private Socket socket = null;

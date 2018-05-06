@@ -12,21 +12,25 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Server.Network
 {
-    public class PlayerPeer
+    public partial class PlayerPeer
     {
         static PlayerPeer()
         {
-            foreach (var mi in typeof(Player).GetMethods())
+            foreach (var type in new Type[] { typeof(PlayerPeer), typeof(Player) })
             {
-                if (mi.GetCustomAttribute(typeof(RemotingMethodAttribute)) is RemotingMethodAttribute attr)
+                foreach (var mi in type.GetMethods())
                 {
-                    MsgHandlers[attr.MethodId] = mi;
+                    if (mi.GetCustomAttribute(typeof(RemotingMethodAttribute)) is RemotingMethodAttribute attr)
+                    {
+                        MsgHandlers[attr.MethodId] = mi;
+                    }
                 }
             }
         }
 
-        public PlayerPeer(Socket sock)
+        public PlayerPeer(Game game, Socket sock)
         {
+            HostGame = game;
             socket = sock;
             LogAppended += OnLogAppended;
             ReceiveMessage();
@@ -40,6 +44,11 @@ namespace SkyARFighter.Server.Network
         public Player HostPlayer
         {
             get; set;
+        }
+
+        public Game HostGame
+        {
+            get; private set;
         }
 
         public string IPEndPoint
@@ -87,15 +96,12 @@ namespace SkyARFighter.Server.Network
                                 try
                                 {
                                     var context = buffer.Skip(8).Take(length).ToArray();
-                                    var str = Encoding.UTF8.GetString(context, 0, context.Length);
-                                    var args = JsonHelper.ParseMethodParameters(mi, str);
-                                    LogAppended?.Invoke(this, $"调用远程方法：{mi.Name}, 参数：{str}");
-
-                                    mi.Invoke(HostPlayer, args);
+                                    var json = Encoding.UTF8.GetString(context, 0, context.Length);
+                                    Program.Game.PushRemotingMessage(this, mi, json);
                                 }
                                 catch (Exception ex)
                                 {
-                                    LogAppended?.Invoke(this, "远程方法调用异常：" + ex.Message);
+                                    LogAppended?.Invoke(this, "远程方法数据异常：" + ex.Message);
                                 }
                             }
                         }
@@ -129,6 +135,10 @@ namespace SkyARFighter.Server.Network
                 LogAppended?.Invoke(this, $"调用客户端方法：{methodId}, 参数：{json}");
             }
             return true;
+        }
+        public void Log(string msg)
+        {
+            LogAppended?.Invoke(this, msg);
         }
         public override string ToString()
         {

@@ -5,6 +5,11 @@ namespace SkyARFighter.Client
 {
     public partial class SimulateClient
     {
+        public void Server_Login(string uniqueId)
+        {
+            InvokeRemoteMethod(RemotingMethodId.Login, new object[] { LoginWay.DeviceId, uniqueId, "" });
+        }
+
         public void Server_SetupWorld(string identityName)
         {
             InvokeRemoteMethod(RemotingMethodId.SetupWorld, new object[] { identityName });

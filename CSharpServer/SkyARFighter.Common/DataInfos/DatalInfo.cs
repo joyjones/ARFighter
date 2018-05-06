@@ -17,22 +17,23 @@ namespace SkyARFighter.Common.DataInfos
         [Column("id"), JsonProperty("id")]
         public long Id
         {
-            get { return _id; }
-            set { _id = value; IsNew = false; }
-        }
-        [JsonIgnore]
+            get; set;
+        } = AutoGenerateID;
+        [NotMapped, JsonIgnore]
         public bool IsNew
         {
-            get; private set;
+            get; set;
         } = true;
-        private long _id = AutoGenerateID;
 
         public virtual void Save(MySqlConnectionFactory fac)
         {
             using (var ctx = fac.CreateContext())
             {
                 if (IsNew)
+                {
                     ctx.Insert(this);
+                    IsNew = false;
+                }
                 else
                 {
                     string sql = string.Empty;

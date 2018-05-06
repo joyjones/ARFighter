@@ -61,10 +61,11 @@ namespace SkyARFighter.Server.Structures
         public void AddModel(SceneModelInfo info)
         {
             var modelInfo = Model.GetDataInfo(info.ModelId);
-            if (modelInfo == null)
+            if (modelInfo == null || GetModel(info.Id) != null)
                 return;
             info.SceneId = Id;
             var model = new SceneModel(this, info);
+            model.Info.IsNew = true;
             model.Info.Save(ParentGame.DB);
             models[model.Id] = model;
 

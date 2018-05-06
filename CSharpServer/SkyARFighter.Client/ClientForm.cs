@@ -25,6 +25,7 @@ namespace SkyARFighter.Client
             txbServerPort.Text = "8333";
             bnDisconnect.Enabled = false;
             tabMain.Enabled = false;
+            Text = "SkyARFighter 模拟客户端 - " + Program.Client.UniqueDeviceId;
             Program.Client.LogAppended += Client_LogAppended;
             Program.Client.Disconnected += Client_Disconnected;
             Program.Client.StateChanged += Client_StateChanged;
@@ -50,6 +51,7 @@ namespace SkyARFighter.Client
                         txbServerPort.Enabled = true;
                         bnConnectServer.Enabled = true;
                         bnDisconnect.Enabled = false;
+                        bnResetDeviceList.Enabled = true;
                         tabMain.SelectedIndex = 0;
                         tabMain.Enabled = false;
                         tsbnSetupWorld.Enabled = true;
@@ -62,6 +64,7 @@ namespace SkyARFighter.Client
                         txbServerPort.Enabled = false;
                         bnConnectServer.Enabled = false;
                         bnDisconnect.Enabled = true;
+                        bnResetDeviceList.Enabled = false;
                         tabMain.Enabled = true;
                         tsbnSetupWorld.Enabled = true;
                         tsbnCreateModel.Enabled = false;
@@ -106,12 +109,14 @@ namespace SkyARFighter.Client
         private void tsMenuItemCreateBox_Click(object sender, EventArgs e)
         {
             var info = new SceneModelInfo();
-            info.PosX = 0.1f;
-            info.PosY = 0.2f;
-            info.PosZ = 0.3f;
+            info.ModelId = 1;
+            info.PosX = (float)CommonMethods.Rander.NextDouble() * (CommonMethods.Rander.Next(2) == 0 ? 1 : -1);
+            info.PosY = (float)CommonMethods.Rander.NextDouble() * (CommonMethods.Rander.Next(2) == 0 ? 1 : -1);
+            info.PosZ = (float)CommonMethods.Rander.NextDouble() * (CommonMethods.Rander.Next(2) == 0 ? 1 : -1);
             info.ScaleX = info.ScaleY = info.ScaleZ = 0.1f;
             info.RotationX = info.RotationY = info.RotationZ = 0;
-            Program.Client.Server_CreateSceneModel(info);
+            info.CreatePlayerId = Program.Client.Info.Id;
+            Program.Client.CreateSceneModel(info);
         }
 
         private void tsbnSetupWorld_Click(object sender, EventArgs e)
@@ -188,6 +193,19 @@ namespace SkyARFighter.Client
                     pnlScene.Refresh();
                 }
             }
+        }
+
+        private void ClientForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.Client.ReleaseDeviceId();
+            Program.Client.Disconnect();
+        }
+
+        private void bnResetDeviceList_Click(object sender, EventArgs e)
+        {
+            Program.Client.GenerateDeviceList();
+            Program.Client.RequireDeviceId();
+            Text = "SkyARFighter 模拟客户端 - " + Program.Client.UniqueDeviceId;
         }
     }
 }

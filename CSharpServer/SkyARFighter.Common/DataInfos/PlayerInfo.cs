@@ -13,7 +13,17 @@ namespace SkyARFighter.Common.DataInfos
     {
         [Column("nickname"), JsonProperty("nickname")]
         public string Nickname;
-        [Column("access_token"), JsonProperty("access_token")]
+        [Column("account"), JsonProperty("account")]
+        public string Account;
+        [Column("password"), JsonIgnore]
+        public string Password;
+        [Column("unique_device_id"), JsonProperty("unique_device_id")]
+        public string UniqueDeviceId;
+        [Column("access_token"), JsonIgnore]
         public string AccessToken;
+        [Column("password_salt"), JsonIgnore]
+        public string PasswordSalt;
+        [Column("last_login_time"), JsonProperty("last_login_time")]
+        public int LastLoginTime;
     }
 }

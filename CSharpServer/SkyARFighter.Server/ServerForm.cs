@@ -25,6 +25,7 @@ namespace SkyARFighter.Server
         {
             Program.Server.LogAppended += Server_LogAppended;
             Program.Server.ClientConnected += Server_ClientConnected;
+            Program.Game.PlayerLoggedIn += Game_PlayerLoggedIn;
             bnStart_Click(null, null);
             Program.Server.Log(null);
         }
@@ -58,6 +59,21 @@ namespace SkyARFighter.Server
         {
             //if (SelectedPlayer != null)
             //    txbClientMsgs.Text = clientMessages[SelectedPlayer];
+        }
+
+        private void Game_PlayerLoggedIn(Player player)
+        {
+            BeginInvoke(new Action(() =>
+            {
+                foreach (ListViewItem i in lsvClients.Items)
+                {
+                    if (i.Tag == player.Peer)
+                    {
+                        i.SubItems[0].Text = player.ToString();
+                        break;
+                    }
+                }
+            }));
         }
 
         private void Server_ClientConnected(PlayerPeer peer)

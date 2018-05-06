@@ -13,11 +13,11 @@
 		DF004E2120988ED4000C85AB /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF004E2020988ED4000C85AB /* Player.swift */; };
 		DF004E2320988EE3000C85AB /* MainPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF004E2220988EE3000C85AB /* MainPlayer.swift */; };
 		DF004E252099EA1B000C85AB /* SceneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF004E242099EA1A000C85AB /* SceneModel.swift */; };
-		DF77EE3D2092F0850058B31B /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF77EE3C2092F0850058B31B /* MathHelper.swift */; };
+		DF004E27209DE314000C85AB /* Defines.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF004E26209DE314000C85AB /* Defines.swift */; };
+		DF77EE3D2092F0850058B31B /* DefinesMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF77EE3C2092F0850058B31B /* DefinesMath.swift */; };
 		DF89B5F22091CE530013684A /* TcpSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF89B5F12091CE530013684A /* TcpSocketServer.swift */; };
 		DF9DF5C02091C703005A66A1 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */; };
 		DFE313442093226000080A64 /* HttpHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE313432093226000080A64 /* HttpHelper.swift */; };
-		DFE313482093466900080A64 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE313472093466900080A64 /* NetModel.swift */; };
 		DFF4B22E2091A16E00A9542C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF4B22D2091A16E00A9542C /* AppDelegate.swift */; };
 		DFF4B2302091A16E00A9542C /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DFF4B22F2091A16E00A9542C /* art.scnassets */; };
 		DFF4B2322091A16E00A9542C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF4B2312091A16E00A9542C /* ViewController.swift */; };
@@ -48,12 +48,12 @@
 		DF004E2020988ED4000C85AB /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DF004E2220988EE3000C85AB /* MainPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPlayer.swift; sourceTree = "<group>"; };
 		DF004E242099EA1A000C85AB /* SceneModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneModel.swift; sourceTree = "<group>"; };
-		DF77EE3C2092F0850058B31B /* MathHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathHelper.swift; sourceTree = "<group>"; };
+		DF004E26209DE314000C85AB /* Defines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defines.swift; sourceTree = "<group>"; };
+		DF77EE3C2092F0850058B31B /* DefinesMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinesMath.swift; sourceTree = "<group>"; };
 		DF89B5F12091CE530013684A /* TcpSocketServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TcpSocketServer.swift; sourceTree = "<group>"; };
 		DF9DF5B72091A8FC005A66A1 /* SwiftSocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
 		DFE313432093226000080A64 /* HttpHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHelper.swift; sourceTree = "<group>"; };
-		DFE313472093466900080A64 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		DFF4B22A2091A16E00A9542C /* ARFighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARFighter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFF4B22D2091A16E00A9542C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFF4B22F2091A16E00A9542C /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -89,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				DF004E1E20983995000C85AB /* SocketClient.swift */,
+				DF004E26209DE314000C85AB /* Defines.swift */,
+				DF77EE3C2092F0850058B31B /* DefinesMath.swift */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -100,7 +102,6 @@
 				DF004E242099EA1A000C85AB /* SceneModel.swift */,
 				DF004E2220988EE3000C85AB /* MainPlayer.swift */,
 				DF004E1B20952DF1000C85AB /* GameScene.swift */,
-				DFE313472093466900080A64 /* NetModel.swift */,
 			);
 			name = Structures;
 			sourceTree = "<group>";
@@ -129,7 +130,6 @@
 				DF004E1D2098397E000C85AB /* Network */,
 				DFE313462093463200080A64 /* Structures */,
 				DFF4B22D2091A16E00A9542C /* AppDelegate.swift */,
-				DF77EE3C2092F0850058B31B /* MathHelper.swift */,
 				DFF4B22F2091A16E00A9542C /* art.scnassets */,
 				DFF4B2312091A16E00A9542C /* ViewController.swift */,
 				DF9DF5BF2091C703005A66A1 /* NetworkViewController.swift */,
@@ -308,14 +308,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF004E2320988EE3000C85AB /* MainPlayer.swift in Sources */,
-				DF77EE3D2092F0850058B31B /* MathHelper.swift in Sources */,
+				DF77EE3D2092F0850058B31B /* DefinesMath.swift in Sources */,
 				DFF4B2322091A16E00A9542C /* ViewController.swift in Sources */,
 				DF004E1C20952DF1000C85AB /* GameScene.swift in Sources */,
 				DFF4B22E2091A16E00A9542C /* AppDelegate.swift in Sources */,
 				DF9DF5C02091C703005A66A1 /* NetworkViewController.swift in Sources */,
 				DF004E252099EA1B000C85AB /* SceneModel.swift in Sources */,
 				DF004E1F20983995000C85AB /* SocketClient.swift in Sources */,
-				DFE313482093466900080A64 /* NetModel.swift in Sources */,
+				DF004E27209DE314000C85AB /* Defines.swift in Sources */,
 				DF89B5F22091CE530013684A /* TcpSocketServer.swift in Sources */,
 				DF004E2120988ED4000C85AB /* Player.swift in Sources */,
 				DFE313442093226000080A64 /* HttpHelper.swift in Sources */,

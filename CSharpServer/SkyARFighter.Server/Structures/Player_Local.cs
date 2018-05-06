@@ -16,9 +16,9 @@ namespace SkyARFighter.Server.Structures
         {
             Program.Game.RequirePlayerScene(this, identityName);
             if (CurScene != null)
-            {
                 Client_SetupWorld(identityName, CurScene.Info, CurScene.Models.Select(m => m.Info).ToArray());
-            }
+            else
+                Client_SendMessage(MessageType.System_Failure, "未能识别到任何场景。");
         }
 
         [RemotingMethod(RemotingMethodId.SyncCamera)]

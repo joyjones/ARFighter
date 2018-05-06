@@ -8,7 +8,7 @@
 import SceneKit
 
 class SceneModelInfo {
-    var id: Int64?
+    var id: Int64 = GameObject.generateAutoId()
     var scene_id: Int64?
     var model_id: Int64?
     var create_player_id: Int64?
@@ -37,7 +37,7 @@ class SceneModelInfo {
     }
     static func fromJson(json: [String: Any]) -> SceneModelInfo {
         let smi = SceneModelInfo()
-        smi.id = json["id"] as? Int64
+        smi.id = json["id"] as! Int64
         smi.scene_id = json["scene_id"] as? Int64
         smi.model_id = json["model_id"] as? Int64
         smi.create_player_id = json["create_player_id"] as? Int64
@@ -70,6 +70,11 @@ class SceneModel: GameObject {
         case 按钮触发器
         case 角色 = 100
     }
+    
+    enum State: Int32 {
+        case Normal
+        case Selected
+    }
 
     init(info: SceneModelInfo, scene: GameScene) {
         self.modelId = info.model_id!
@@ -81,6 +86,7 @@ class SceneModel: GameObject {
         self.parentScene.rootNode.addChildNode(sceneNode!)
         
         super.init()
+        id = info.id
         position = info.pos
         scale = info.scale
         rotation = info.rotation
@@ -113,6 +119,23 @@ class SceneModel: GameObject {
             sceneNode!.simdRotation = simd_float4(newValue.x, newValue.y, newValue.z, 1)
         }
     }
+    
+    private var _state = State.Normal
+    var state: State {
+        get { return _state }
+        set {
+            if _state != newValue {
+                _state = newValue
+                if _state == .Normal {
+                    geometry?.firstMaterial?.diffuse.contents = UIColor.white
+                }
+                else if _state == .Selected {
+                    geometry?.firstMaterial?.diffuse.contents = UIColor.orange
+                }
+            }
+        }
+    }
+    
     func toJson() -> [String: Any] {
         var kv = [String: Any]()
         kv["id"] = id
