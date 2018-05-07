@@ -183,7 +183,7 @@ namespace SkyARFighter.Server.Structures
 
         public Scene RequirePlayerScene(Player player, string identityName)
         {
-            var scene = scenes.Values.Where(s => s.StartupName == identityName).FirstOrDefault();
+            var scene = scenes.Values.Where(s => s.StartupMarker.ParentMarker.Info.Name == identityName).FirstOrDefault();
             if (scene != null)
             {
                 scene.AddPlayer(player);

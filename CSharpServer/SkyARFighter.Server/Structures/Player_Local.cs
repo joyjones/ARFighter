@@ -19,7 +19,7 @@ namespace SkyARFighter.Server.Structures
                 Client_SendMessage(MessageType.System_Failure, "未能识别到任何场景。");
             else
             {
-                Client_SetupWorld(identityName, CurScene.Info, CurScene.Models.Select(m => m.Info).ToArray());
+                Client_SetupWorld(CurScene.StartupMarker.Id, CurScene.Info, CurScene.Markers.Select(m => m.Info).ToArray(), CurScene.Models.Select(m => m.Info).ToArray());
 
                 foreach (var plr in CurScene.Players.ToArray())
                 {

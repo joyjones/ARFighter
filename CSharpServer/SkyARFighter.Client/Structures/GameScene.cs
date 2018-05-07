@@ -11,18 +11,22 @@ namespace SkyARFighter.Client
 {
     public class GameScene : SceneInfo
     {
-        public GameScene(SceneInfo info, string identityName, SceneModelInfo[] models)
+        public GameScene(SceneInfo info, long markerId, SceneMarkerInfo[] markers, SceneModelInfo[] models)
         {
             Id = info.Id;
             Name = info.Name;
-            StartupName = identityName;
+            StartupMarkerId = markerId;
+            foreach (var mi in markers)
+            {
+                this.markers[mi.Id] = mi;
+            }
             foreach (var mi in models)
             {
                 this.models[mi.Id] = mi;
             }
         }
 
-        public string StartupName
+        public long StartupMarkerId
         {
             get; private set;
         }
@@ -87,6 +91,7 @@ namespace SkyARFighter.Client
             }
         }
 
+        private Dictionary<long, SceneMarkerInfo> markers = new Dictionary<long, SceneMarkerInfo>();
         private Dictionary<long, SceneModelInfo> models = new Dictionary<long, SceneModelInfo>();
         private Dictionary<long, Player> players = new Dictionary<long, Player>();
     }
