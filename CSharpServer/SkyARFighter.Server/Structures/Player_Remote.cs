@@ -16,9 +16,9 @@ namespace SkyARFighter.Server.Structures
             Peer.SendMessage(RemotingMethodId.Welcome, new object[] { info.AccessToken, info });
         }
 
-        public void Client_SetupWorld(string identityName, SceneInfo sceneInfo, SceneModelInfo[] models)
+        public void Client_SetupWorld(long markerId, SceneInfo sceneInfo, SceneMarkerInfo[] markers, SceneModelInfo[] models)
         {
-            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { identityName, sceneInfo, models });
+            Peer.SendMessage(RemotingMethodId.SetupWorld, new object[] { markerId, sceneInfo, markers, models });
         }
 
         public void Client_SendMessage(MessageType type, string message)

@@ -19,25 +19,24 @@ namespace SkyARFighter.Server.Structures
         {
             get; private set;
         }
-        public string StartupName
+        public SceneMarker StartupMarker
         {
             get; private set;
         }
+        public IEnumerable<SceneMarker> Markers => markers.Values;
         public IEnumerable<SceneModel> Models => models.Values;
         public IEnumerable<Player> Players => players.Values;
 
         public override void Load()
         {
-            foreach (var mi in SceneMarker.Records)
+            foreach (var mi in SceneMarker.Records.Where(r => r.SceneId == Id))
             {
-                if (mi.SceneId != Id)
-                    continue;
                 var sm = new SceneMarker(this, mi);
                 markers[sm.ParentMarker.Info.Name] = sm;
-                if (StartupName == null)
-                    StartupName = sm.ParentMarker.Info.Name;
+                if (StartupMarker == null)
+                    StartupMarker = sm;
             }
-            foreach (var mi in SceneModel.Records)
+            foreach (var mi in SceneModel.Records.Where(r => r.SceneId == Id))
             {
                 var sm = new SceneModel(this, mi);
                 models[sm.Id] = sm;

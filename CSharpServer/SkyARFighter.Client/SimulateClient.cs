@@ -117,7 +117,7 @@ namespace SkyARFighter.Client
                 var buffer = new byte[1024];
                 while (socket.Connected)
                 {
-                    socket.ReceiveTimeout = 1000;
+                    socket.ReceiveTimeout = 5000;
                     try
                     {
                         if (socket.Receive(buffer, 0, 8, SocketFlags.None) == 0)

@@ -23,10 +23,10 @@ namespace SkyARFighter.Client
         }
 
         [RemotingMethod(RemotingMethodId.SetupWorld)]
-        public void SetupWorld(string identityName, SceneInfo sceneInfo, SceneModelInfo[] models)
+        public void SetupWorld(long markerId, SceneInfo sceneInfo, SceneMarkerInfo[] markers, SceneModelInfo[] models)
         {
             timer.Enabled = true;
-            scene = new GameScene(sceneInfo, identityName, models);
+            scene = new GameScene(sceneInfo, markerId, markers, models);
             State = States.InScene;
             SceneContentChanged?.Invoke();
         }

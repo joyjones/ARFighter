@@ -138,7 +138,7 @@ namespace SkyARFighter.Client
 
         private void tsbnSetupWorld_Click(object sender, EventArgs e)
         {
-            Program.Client.Server_SetupWorld("test02");
+            Program.Client.Server_SetupWorld("test01");
         }
 
         private const float MetersPerPixel = 0.01f;

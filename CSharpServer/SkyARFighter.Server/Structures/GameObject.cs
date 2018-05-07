@@ -20,6 +20,7 @@ namespace SkyARFighter.Server.Structures
         public GameObject()
         {
             Info = Activator.CreateInstance(typeof(T)) as T;
+            Id = Info.Id;
         }
         public GameObject(T info)
         {
