@@ -26,19 +26,55 @@ class MainPlayer: Player {
         if imageName.count == 0 || state == .Initial {
             return
         }
-        let pos = transform.columns.3
-        print("init world at: \(pos.x),\(pos.y),\(pos.z)")
-        // let trans = GLKMatrix4RotateX(mat, -Float.pi * 0.5)
-        parentScene?.session?.setWorldOrigin(relativeTransform: transform)
-        
+        if state == .ScenePlaying && parentScene?.startupMarker != nil {
+            worldTransform = transformWorldOrigin(transform: transform, startupMarker: parentScene!.startupMarker!)
+        }
+        else {
+            worldTransform = transform
+        }
+
+        parentScene?.session?.setWorldOrigin(relativeTransform: worldTransform!)
+        print("init world at: \(transform.columns.3.x),\(transform.columns.3.y),\(transform.columns.3.z)")
+
         if state == .SearchOrigin {
             state = .SceneLoading
             server_requireScene(identityName: imageName)
         }
     }
     
+    func setupWorldOrigin(startupMarker: SceneMarker) {
+        if state != .SceneLoading {
+            return
+        }
+        worldTransform = transformWorldOrigin(transform: worldTransform!, startupMarker: startupMarker)
+        parentScene?.session?.setWorldOrigin(relativeTransform: worldTransform!)
+        
+        state = .ScenePlaying
+    }
+    
+    private func transformWorldOrigin(transform: matrix_float4x4, startupMarker: SceneMarker) -> matrix_float4x4 {
+        var transform = transform
+        let rot = startupMarker.originRotation
+        if rot.x != 0 {
+            let rotatedTrans = GLKMatrix4RotateX(transform.toGLK(), Float.pi * (rot.x / 180.0))
+            transform = matrix_float4x4.fromGLK(rotatedTrans)
+        }
+        if rot.y != 0 {
+            let rotatedTrans = GLKMatrix4RotateY(transform.toGLK(), Float.pi * (rot.y / 180.0))
+            transform = matrix_float4x4.fromGLK(rotatedTrans)
+        }
+        if rot.z != 0 {
+            let rotatedTrans = GLKMatrix4RotateZ(transform.toGLK(), Float.pi * (rot.z / 180.0))
+            transform = matrix_float4x4.fromGLK(rotatedTrans)
+        }
+        return transform
+    }
+    
     func createModel(templateId: Int64, pos: simd_float3) {
         if parentScene == nil || !parentScene!.isReadyForPlay {
+            return
+        }
+        if templateId == 3 && parentScene?.controllingCharacter != nil {
             return
         }
         let smi = SceneModelInfo()
@@ -46,7 +82,7 @@ class MainPlayer: Player {
         smi.model_id = templateId
         smi.pos = pos
         smi.rotation = simd_float3(0)
-        smi.scale = simd_float3(templateId == 3 ? 0.0005 : 0.05)
+        smi.scale = simd_float3(templateId == 3 ? 0.005 : 0.05)
         if let model = parentScene?.addModel(info: smi) {
             server_createSceneModel(model: model)
         }
@@ -112,6 +148,7 @@ class MainPlayer: Player {
         SocketClient.instance.sendMessage(cmd: .CreateSceneModel, context: [model.toJson()])
     }
     
+    var worldTransform: matrix_float4x4?
     private var _state: PlayerState = .Initial
     private var _elapsedTime: Double = 0
     private var _lastSyncCameraTick: Double = 0

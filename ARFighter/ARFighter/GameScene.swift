@@ -44,7 +44,7 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     private func initialize(){
         mainPlayer = MainPlayer(scene: self)
         SocketClient.instance.delegateMethods = self
-//        triggerNetwork()
+        triggerNetwork()
         connectServer()
         enableTimer(enabled: true)
     }
@@ -55,8 +55,8 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     
     func connectServer() {
         updateQueue.async {
-            SocketClient.instance.connectServer(address: "192.168.31.219", port: 8333)
-            //        SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
+//            SocketClient.instance.connectServer(address: "192.168.31.219", port: 8333)
+            SocketClient.instance.connectServer(address: "10.1.7.40", port: 8333)
         }
     }
     
@@ -105,14 +105,22 @@ class GameScene: SCNScene, RemotingMethodDelegate {
             pi.accessToken = (args[0] as! String)
             mainPlayer!.initPlayer(info: pi)
         case .SetupWorld:
-            startupName = args[0] as? String
+            let startupId = (args[0] as! Int64)
             info = SceneInfo.fromJson(json: args[1] as! [String: Any])
-            let json = args[2] as! [Any]
-            for mi in json {
-                let info = SceneModelInfo.fromJson(json: mi as! [String: Any])
-                models[info.id] = SceneModel(info: info, scene: self)
+            let jsonMrk = args[2] as! [Any]
+            for mi in jsonMrk {
+                let i = SceneMarkerInfo.fromJson(json: mi as! [String: Any])
+                markers[i.id] = SceneMarker(info: i, scene: self)
+                if startupId == i.id {
+                    startupMarker = markers[i.id]!
+                }
             }
-            mainPlayer!.state = .ScenePlaying
+            let jsonMdl = args[3] as! [Any]
+            for mi in jsonMdl {
+                let i = SceneModelInfo.fromJson(json: mi as! [String: Any])
+                models[i.id] = SceneModel(info: i, scene: self)
+            }
+            mainPlayer!.setupWorldOrigin(startupMarker: startupMarker!)
         case .SendMessage:
             SocketClient.instance.delegateMsg?.alert(msg: args[1] as! String)
         case .CreateSceneModel:
@@ -182,10 +190,9 @@ class GameScene: SCNScene, RemotingMethodDelegate {
         return models.removeValue(forKey: modelId) != nil
     }
     
-    
     let updateQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".MainSceneQueue")
     var info: SceneInfo?
-    var startupName: String?
+    var startupMarker: SceneMarker?
     var session: ARSession?
     var optMode: OperationMode = .Create
     var modelCreateKind: ModelCreateKind = .Sphere
@@ -207,6 +214,7 @@ class GameScene: SCNScene, RemotingMethodDelegate {
     var mainPlayer: MainPlayer?
     var players = [Int64: Player]()
     var models = [Int64: SceneModel]()
+    var markers = [Int64: SceneMarker]()
     var delegateMsg: MessageViewDelegate?
     var controllingCharacter: Character? {
         for m in models.values {

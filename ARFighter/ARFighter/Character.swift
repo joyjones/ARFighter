@@ -14,7 +14,7 @@ class Character: SCNNode {
     
     var animations = [String: CAAnimation]()
     var movingDirection = float3(0, 0, 0)
-    var movingSpeed: Float = 0.002
+    var movingSpeed: Float = 0.02
     var curAnimation: String = ""
     var parentCamera: ARCamera!
     var parentModel: SceneModel
