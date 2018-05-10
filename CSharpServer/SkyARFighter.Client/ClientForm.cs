@@ -73,7 +73,8 @@ namespace SkyARFighter.Client
 
         private void OnClient_Disconnected()
         {
-            Program.Client.Scene.Reset();
+            if (Program.Client.Scene != null)
+                Program.Client.Scene.Reset();
             BeginInvoke(new Action(() =>
             {
             }));

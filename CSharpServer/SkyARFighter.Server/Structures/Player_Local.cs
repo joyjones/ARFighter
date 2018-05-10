@@ -1,5 +1,6 @@
 ﻿using SkyARFighter.Common;
 using SkyARFighter.Common.DataInfos;
+using SkyARFighter.Common.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Server.Structures
 {
-    public partial class Player
+    public partial class Player : IGameService
     {
-        [RemotingMethod(RemotingMethodId.SetupWorld)]
         public void SetupWorld(string identityName)
         {
             Program.Game.RequirePlayerScene(this, identityName);
@@ -30,7 +30,6 @@ namespace SkyARFighter.Server.Structures
             }
         }
 
-        [RemotingMethod(RemotingMethodId.CreateSceneModel)]
         public void CreateSceneModel(SceneModelInfo info)
         {
             if (CurScene == null)
@@ -39,7 +38,6 @@ namespace SkyARFighter.Server.Structures
             CurScene.AddModel(info);
         }
 
-        [RemotingMethod(RemotingMethodId.MoveSceneModel)]
         public void MoveSceneModel(long modelId, Vector3 pos)
         {
             if (CurScene == null)
@@ -47,7 +45,6 @@ namespace SkyARFighter.Server.Structures
             CurScene.TransformModel(Id, modelId, pos, null, null);
         }
 
-        [RemotingMethod(RemotingMethodId.RotateSceneModel)]
         public void RotateSceneModel(long modelId, Vector3 rotation)
         {
             if (CurScene == null)
@@ -55,7 +52,6 @@ namespace SkyARFighter.Server.Structures
             CurScene.TransformModel(Id, modelId, null, rotation, null);
         }
 
-        [RemotingMethod(RemotingMethodId.ScaleSceneModel)]
         public void ScaleSceneModel(long modelId, Vector3 scale)
         {
             if (CurScene == null)
@@ -63,7 +59,6 @@ namespace SkyARFighter.Server.Structures
             CurScene.TransformModel(Id, modelId, null, null, scale);
         }
 
-        [RemotingMethod(RemotingMethodId.DeleteSceneModel)]
         public void DeleteSceneModel(long modelId)
         {
             if (CurScene == null)
@@ -71,9 +66,10 @@ namespace SkyARFighter.Server.Structures
             CurScene.DeleteModel(Id, modelId);
         }
 
-        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
         public void SyncPlayerState(Vector3 pos, Vector3 rotation)
         {
+            if (CurScene == null)
+                return;
             cameraPos = pos;
             cameraRotation = rotation;
 

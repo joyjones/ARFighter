@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkyARFighter.Common
 {
-    public enum RemotingMethodId
+    public enum RemotingMethodId : int
     {
         [RemotingDirection(RemotingDirection.C2S)]
         Login = 0x01,
@@ -61,16 +61,6 @@ namespace SkyARFighter.Common
         System_Failure,
         System_Notification,
         Player_Chat,
-    }
-
-    public class RemotingMethodAttribute: Attribute
-    {
-        public RemotingMethodAttribute(RemotingMethodId methodId)
-        {
-            MethodId = methodId;
-        }
-
-        public RemotingMethodId MethodId { get; private set; }
     }
 
     public enum RemotingDirection

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SkyARFighter.Common;
 using SkyARFighter.Common.DataInfos;
+using SkyARFighter.Common.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,8 @@ using System.Windows.Forms;
 
 namespace SkyARFighter.Client
 {
-    public partial class SimulateClient
+    public partial class SimulateClient : ILoginServiceCallback, IGameServiceCallback
     {
-        [RemotingMethod(RemotingMethodId.Welcome)]
         public void InitPlayer(string accessToken, PlayerInfo info)
         {
             playerInfo = info;
@@ -22,7 +22,6 @@ namespace SkyARFighter.Client
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.SetupWorld)]
         public void SetupWorld(long markerId, SceneInfo sceneInfo, SceneMarkerInfo[] markers, SceneModelInfo[] models)
         {
             timer.Enabled = true;
@@ -31,32 +30,27 @@ namespace SkyARFighter.Client
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.AddPlayer)]
         public void AddPlayer(PlayerInfo info)
         {
             Scene.AddPlayer(info);
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.RemovePlayer)]
         public void RemovePlayer(long playerId)
         {
             Scene.RemovePlayer(playerId);
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.SyncPlayerState)]
         public void SyncPlayerState(long playerId, Vector3 camPos, Vector3 camRotation)
         {
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.SendMessage)]
         public void SendMessage(MessageType type, string message)
         {
         }
 
-        [RemotingMethod(RemotingMethodId.CreateSceneModel)]
         public void CreateSceneModel(SceneModelInfo info)
         {
             scene.AddModel(info);
@@ -67,28 +61,24 @@ namespace SkyARFighter.Client
             }
         }
 
-        [RemotingMethod(RemotingMethodId.MoveSceneModel)]
         public void MoveSceneModel(long playerId, long modelId, Vector3 pos)
         {
             scene.TransformModel(playerId, modelId, pos, null, null);
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.RotateSceneModel)]
         public void RotateSceneModel(long playerId, long modelId, Vector3 rotation)
         {
             scene.TransformModel(playerId, modelId, null, rotation, null);
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.ScaleSceneModel)]
         public void ScaleSceneModel(long playerId, long modelId, Vector3 scale)
         {
             scene.TransformModel(playerId, modelId, null, null, scale);
             SceneContentChanged?.Invoke();
         }
 
-        [RemotingMethod(RemotingMethodId.DeleteSceneModel)]
         public void DeleteSceneModel(long playerId, long modelId)
         {
             scene.DeleteModel(modelId);

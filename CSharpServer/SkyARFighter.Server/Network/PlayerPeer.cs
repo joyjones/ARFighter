@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SkyARFighter.Common;
+using SkyARFighter.Common.Network;
 using SkyARFighter.Server.Structures;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,7 @@ namespace SkyARFighter.Server.Network
     {
         static PlayerPeer()
         {
-            foreach (var type in new Type[] { typeof(PlayerPeer), typeof(Player) })
-            {
-                foreach (var mi in type.GetMethods())
-                {
-                    if (mi.GetCustomAttribute(typeof(RemotingMethodAttribute)) is RemotingMethodAttribute attr)
-                    {
-                        MsgHandlers[attr.MethodId] = mi;
-                    }
-                }
-            }
+            MsgHandlers = RemotingMethodAttribute.GetTypeMethodsMapping(typeof(Player), typeof(PlayerPeer));
         }
 
         public PlayerPeer(Game game, Socket sock)
@@ -33,7 +25,9 @@ namespace SkyARFighter.Server.Network
             HostGame = game;
             socket = sock;
             LogAppended += OnLogAppended;
-            ReceiveMessage();
+            MsgProc = new Communication(MsgHandlers);
+            MsgProc.StartupThread("接收端通信处理线程",  socket, 
+                (msg) => LogAppended?.Invoke(this, msg), () => Disconnected?.Invoke(this));
         }
 
         private void OnLogAppended(PlayerPeer self, string msg)
@@ -57,87 +51,40 @@ namespace SkyARFighter.Server.Network
         }
 
         public string[] Logs => logs.ToArray();
+        public Communication MsgProc { get; private set; }
 
         private Socket socket = null;
-        private ManualResetEvent waitingNextMessage = new ManualResetEvent(false);
 
-        private void ReceiveMessage()
+        public void SendMessage(RemotingMethodId methodId, object args)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
-            {
-                Thread.CurrentThread.Name = "客户端通信处理线程";
-                var buffer = new byte[4096];
-                while (socket.Connected)
-                {
-                    waitingNextMessage.Reset();
-
-                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ar =>
-                    {
-                        try
-                        {
-                            if (socket.EndReceive(ar) == 0)
-                                throw new Exception();
-                        }
-                        catch
-                        {
-                            LogAppended?.Invoke(this, "断开连接");
-                            Disconnected?.Invoke(this);
-                            return;
-                        }
-
-                        var msgType = (RemotingMethodId)BitConverter.ToInt32(buffer, 0);
-                        int length = BitConverter.ToInt32(buffer, 4);
-                        if (length > 0)
-                        {
-                            if (!MsgHandlers.TryGetValue(msgType, out MethodInfo mi))
-                                LogAppended?.Invoke(this, "收到未注册的的远程方法调用请求：" + msgType);
-                            else
-                            {
-                                try
-                                {
-                                    var context = buffer.Skip(8).Take(length).ToArray();
-                                    var json = Encoding.UTF8.GetString(context, 0, context.Length);
-                                    Program.Game.PushRemotingMessage(this, mi, json);
-                                }
-                                catch (Exception ex)
-                                {
-                                    LogAppended?.Invoke(this, "远程方法数据异常：" + ex.Message);
-                                }
-                            }
-                        }
-
-                        waitingNextMessage.Set();
-                    }), null);
-
-                    while (socket.Connected && !waitingNextMessage.WaitOne(50)) ;
-                }
-            }));
+            MsgProc.SendMessage(socket, methodId, args, (msg) => LogAppended?.Invoke(this, msg));
         }
 
-        public bool SendMessage(RemotingMethodId methodId, object args)
+        public void ProcessMessages()
         {
-            if (!socket.Connected)
-                return false;
-
-            using (var sw = new System.IO.MemoryStream())
+            foreach (var msg in MsgProc.Messages)
             {
-                var bsType = BitConverter.GetBytes((int)methodId);
-                var json = JsonConvert.SerializeObject(args);
-                var bsCtx = Encoding.UTF8.GetBytes(json);
-
-                sw.Write(bsType, 0, bsType.Length);
-                var bsLen = BitConverter.GetBytes(bsCtx.Length);
-                sw.Write(bsLen, 0, bsLen.Length);
-                sw.Write(bsCtx, 0, bsCtx.Length);
-                var bsSend = sw.GetBuffer();
-                int lenReal = bsType.Length + bsLen.Length + bsCtx.Length;
-                if (lenReal < bsSend.Length)
-                    bsSend = bsSend.Take(lenReal).ToArray();
-                socket.Send(bsSend);
-
-                LogAppended?.Invoke(this, $"调用客户端方法：{methodId}, 字节数: {lenReal}/{bsSend.Length}");//, 参数：{json}");
+                //var content = ZipHelper.GZipDecompressString(msg.args);
+                try
+                {
+                    if (MsgHandlers.TryGetValue((int)msg.code, out MethodInfo method))
+                    {
+                        var args = JsonHelper.ParseMethodParameters(method, msg.args);
+                        if (method.Name != "SyncPlayerState")
+                            LogAppended?.Invoke(this, $"调用本地方法：{method.Name}, 参数：{msg.args}");
+                        if (method.DeclaringType == typeof(PlayerPeer))
+                            method.Invoke(this, args);
+                        else if (HostPlayer != null)
+                            method.Invoke(HostPlayer, args);
+                        else
+                            LogAppended?.Invoke(this, ">> 调用失败");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogAppended?.Invoke(this, "本地方法调用异常：" + ex.Message);
+                }
             }
-            return true;
         }
         public void Log(string msg)
         {
@@ -159,6 +106,6 @@ namespace SkyARFighter.Server.Network
         public event Action<PlayerPeer, string> LogAppended;
         public event Action<PlayerPeer> Disconnected;
         private List<string> logs = new List<string>();
-        public static Dictionary<RemotingMethodId, MethodInfo> MsgHandlers = new Dictionary<RemotingMethodId, MethodInfo>();
+        public static Dictionary<int, MethodInfo> MsgHandlers = new Dictionary<int, MethodInfo>();
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -88,6 +89,13 @@ namespace SkyARFighter.Server.Structures
             }
         }
 
+        public PlayerPeer CreatePeerInstance(Socket socket)
+        {
+            var pp = new PlayerPeer(this, socket);
+            peers.Add(pp);
+            return pp;
+        }
+
         private void StartupLogic()
         {
             isRunning.Set();
@@ -102,28 +110,9 @@ namespace SkyARFighter.Server.Structures
                     long elapsedTick = (lastTick == 0 ? 0 : (currTick - lastTick));
                     var ts = new TimeSpan(elapsedTick);
 
-                    lock (remotingMessages)
+                    foreach (var pp in peers)
                     {
-                        while (remotingMessages.Count > 0)
-                        {
-                            var (peer, method, json) = remotingMessages.Dequeue();
-                            try
-                            {
-                                var args = JsonHelper.ParseMethodParameters(method, json);
-                                if (method.Name != "SyncPlayerState")
-                                    peer.Log($"调用远程方法：{method.Name}, 参数：{json}");
-                                if (method.DeclaringType == typeof(PlayerPeer))
-                                    method.Invoke(peer, args);
-                                else if (peer.HostPlayer != null)
-                                    method.Invoke(peer.HostPlayer, args);
-                                else
-                                    peer.Log(">> 调用失败");
-                            }
-                            catch (Exception ex)
-                            {
-                                peer.Log("远程方法调用异常：" + ex.Message);
-                            }
-                        }
+                        pp.ProcessMessages();
                     }
 
                     lock (scenes)
@@ -174,13 +163,7 @@ namespace SkyARFighter.Server.Structures
                 player.CurScene.RemovePlayer(player);
             players.Remove(player.Id);
         }
-
-        public void PushRemotingMessage(PlayerPeer peer, MethodInfo method, string json)
-        {
-            lock (remotingMessages)
-                remotingMessages.Enqueue((peer, method, json));
-        }
-
+        
         public Scene RequirePlayerScene(Player player, string identityName)
         {
             var scene = scenes.Values.Where(s => s.StartupMarker.ParentMarker.Info.Name == identityName).FirstOrDefault();
@@ -242,7 +225,7 @@ namespace SkyARFighter.Server.Structures
         private Dictionary<long, Model> models = new Dictionary<long, Model>();
         private Dictionary<long, Scene> scenes = new Dictionary<long, Scene>();
         private Dictionary<long, Player> players = new Dictionary<long, Player>();
-        private Queue<(PlayerPeer peer, MethodInfo method, string json)> remotingMessages = new Queue<(PlayerPeer, MethodInfo, string)>();
+        private List<PlayerPeer> peers = new List<PlayerPeer>();
         public event Action<Player> PlayerLoggedIn;
     }
 }
