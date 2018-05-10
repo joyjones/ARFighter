@@ -2,7 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "imac-21.jpg"
+      "filename" : "macbookpro-15.jpg"
     }
   ],
   "info" : {
@@ -10,7 +10,7 @@
     "author" : "xcode"
   },
   "properties" : {
-    "width" : 10,
+    "width" : 5.9999999379999984,
     "unit" : "centimeters"
   }
 }
